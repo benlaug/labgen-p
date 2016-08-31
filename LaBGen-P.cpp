@@ -1,5 +1,20 @@
 /**
- * Copyright - Benjamin Laugraud - 2016
+ * Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2016
+ * http://www.montefiore.ulg.ac.be/~blaugraud
+ * http://www.telecom.ulg.ac.be/research/sbg
+ *
+ * LaBGen-P is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * LaBGen-P is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with BGSLibrary.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <algorithm>
 #include <cstddef>
@@ -16,10 +31,10 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "FrameDifferenceC1L1.h"
-#include "History.h"
-#include "MotionProba.h"
-#include "Utils.h"
+#include "FrameDifferenceC1L1.hpp"
+#include "History.hpp"
+#include "MotionProba.hpp"
+#include "Utils.hpp"
 
 using namespace std;
 using namespace boost;
