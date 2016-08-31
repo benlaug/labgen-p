@@ -50,8 +50,10 @@ int main(int argc, char** argv) {
    ***************************************************************************/
 
   options_description optDesc(
-    string("Copyright - Benjamin Laugraud - 2016\n")                          +
-    "Usage: background_modeler_ng [options]"
+    string("LaBGen-P - Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2016\n") +
+    "http://www.montefiore.ulg.ac.be/~blaugraud\n"                                  +
+    "http://www.telecom.ulg.ac.be/research/sbg\n\n"                                 +
+    "Usage: LaBGen-P [options]"
   );
 
   optDesc.add_options()
@@ -217,11 +219,11 @@ int main(int argc, char** argv) {
   cout << "Size of the kernel: " << ((min(height, width) / nParam) | 1) << endl;
 
   /* Initialization of the maps matrices. */
-  cv::Mat probabilityMap;
-  cv::Mat filteredProbabilityMap;
+  cv::Mat motionScores;
+  cv::Mat quantitiesMotion;
 
-  probabilityMap = cv::Mat(height, width, CV_32SC1);
-  filteredProbabilityMap = cv::Mat(height, width, filter.getOpenCVEncoding());
+  motionScores = cv::Mat(height, width, CV_32SC1);
+  quantitiesMotion = cv::Mat(height, width, filter.getOpenCVEncoding());
 
   /* Initialization of the history structure. */
   boost::shared_ptr<PatchesHistory> history = boost::make_shared<PatchesHistory>(rois, sParam);
@@ -242,15 +244,11 @@ int main(int argc, char** argv) {
       fdiff = make_shared<FrameDifferenceC1L1>();
 
     /* Background subtraction. */
-    fdiff->process((*it).clone(), probabilityMap);
+    fdiff->process((*it).clone(), motionScores);
 
     /* Visualization of the input frame and its probability map. */
-    if (visualization) {
+    if (visualization)
       imshow("Input video", (*it));
-
-      if (!probabilityMap.empty())
-        imshow("Probability map", probabilityMap);
-    }
 
     /* Skipping first frame. */
     if (firstFrame) {
@@ -263,17 +261,15 @@ int main(int argc, char** argv) {
     }
 
     /* Filtering probability map. */
-    if (!probabilityMap.empty()) {
-      filter.compute(probabilityMap, filteredProbabilityMap);
+    if (!motionScores.empty()) {
+      filter.compute(motionScores, quantitiesMotion);
 
-      if (visualization) {
-        imshow("Filtered probability map", filteredProbabilityMap);
-        cvWaitKey(1);
-      }
+      if (visualization)
+        imshow("Quantities of motion", quantitiesMotion);
     }
 
     /* Insert the current frame and its probability map into the history. */
-    history->insert(filteredProbabilityMap, (*it));
+    history->insert(quantitiesMotion, (*it));
 
     if (visualization) {
       history->median(background, sParam);
