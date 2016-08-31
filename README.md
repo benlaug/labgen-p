@@ -1,4 +1,4 @@
-# LaBGen
+# LaBGen-P
 
 ![Screenshot](readme/graphical-abstract.png)
 
