@@ -2,7 +2,7 @@
  * Copyright - Sébastien Piérard <sebastien.pierard@ulg.ac.be> - 2016
  * Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be>         - 2016
  * http://www.montefiore.ulg.ac.be/~blaugraud
- * http://www.telecom.ulg.ac.be/research/sbg
+ * http://www.telecom.ulg.ac.be/labgen
  *
  * LaBGen-P is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

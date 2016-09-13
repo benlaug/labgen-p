@@ -1,6 +1,6 @@
 # Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2016
 # http://www.montefiore.ulg.ac.be/~blaugraud
-# http://www.telecom.ulg.ac.be/research/sbg
+# http://www.telecom.ulg.ac.be/labgen
 #
 # This file is part of LaBGen-P.
 #
@@ -29,7 +29,7 @@ endif ()
 project(LaBGen-P)
 
 # C++ flags.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -pedantic -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # Boost.
 find_package(Boost REQUIRED program_options)

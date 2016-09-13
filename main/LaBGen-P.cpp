@@ -1,7 +1,7 @@
 /**
  * Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2016
  * http://www.montefiore.ulg.ac.be/~blaugraud
- * http://www.telecom.ulg.ac.be/research/sbg
+ * http://www.telecom.ulg.ac.be/labgen
  *
  * LaBGen-P is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,8 @@
 
 #include <boost/program_options.hpp>
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #include <labgen-p/FrameDifferenceC1L1.hpp>
 #include <labgen-p/History.hpp>
@@ -50,8 +51,8 @@ int main(int argc, char** argv) {
 
   options_description optDesc(
     string("LaBGen-P - Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2016\n") +
-    "http://www.montefiore.ulg.ac.be/~blaugraud\n"                                  +
-    "http://www.telecom.ulg.ac.be/research/sbg\n\n"                                 +
+    "http://www.montefiore.ulg.ac.be/~blaugraud\n"                                    +
+    "http://www.telecom.ulg.ac.be/labgen\n\n"                                         +
     "Usage: LaBGen-P [options]"
   );
 
