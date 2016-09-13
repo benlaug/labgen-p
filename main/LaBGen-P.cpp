@@ -285,7 +285,7 @@ int main(int argc, char** argv) {
   /* Compute background and write it. */
   history->median(background, sParam);
 
-  cout << "Writing " << outputFile << "..." << endl;
+  cout << "Writing " << outputFile.str() << "..." << endl;
   imwrite(outputFile.str(), background);
 
   /* Cleaning. */

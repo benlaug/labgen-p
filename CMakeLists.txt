@@ -23,7 +23,7 @@ cmake_minimum_required(VERSION 2.8)
 # Disable RPATH support for OS X.
 if    (${CMAKE_MAJOR_VERSION} EQUAL 3 AND APPLE)
   cmake_policy(SET CMP0042 OLD)
-endif (${CMAKE_MAJOR_VERSION} EQUAL 3 AND APPLE)
+endif ()
 
 # Project name.
 project(LaBGen-P)
@@ -36,7 +36,14 @@ find_package(Boost REQUIRED program_options)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
 # OpenCV.
-find_package(OpenCV REQUIRED core highgui video)
+find_package(OpenCV REQUIRED)
+set(OpenCV_REQUIRED_LIST core highgui video)
+
+if    (NOT ${OpenCV_VERSION_MAJOR} VERSION_LESS 3)
+  list(APPEND OpenCV_REQUIRED_LIST videoio imgcodecs)
+endif ()
+
+find_package(OpenCV REQUIRED ${OpenCV_REQUIRED_LIST})
 include_directories(SYSTEM ${OpenCV_INCLUDE_DIR})
 
 # Include directory.

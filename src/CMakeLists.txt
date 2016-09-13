@@ -22,6 +22,7 @@ file(
   *.cpp
 )
 
+# Shared library.
 add_library(
   LaBGen-P_shared
   SHARED
@@ -41,6 +42,7 @@ target_link_libraries(
   ${OpenCV_LIBS}
 )
 
+# Static library.
 add_library(
   LaBGen-P_static
   STATIC
