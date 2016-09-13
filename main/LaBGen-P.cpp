@@ -20,14 +20,12 @@
 #include <cstddef>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 
-#include <boost/lexical_cast.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/program_options.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <opencv2/opencv.hpp>
 
@@ -36,6 +34,7 @@
 #include <labgen-p/MotionProba.hpp>
 #include <labgen-p/Utils.hpp>
 
+using namespace cv;
 using namespace std;
 using namespace boost;
 using namespace boost::program_options;
@@ -177,7 +176,7 @@ int main(int argc, char** argv) {
    * Reading sequence.                                                       *
    ***************************************************************************/
 
-  cv::VideoCapture decoder(sequence);
+  VideoCapture decoder(sequence);
 
   if (!decoder.isOpened())
     throw runtime_error("Cannot open the '" + sequence + "' sequence.");
@@ -190,11 +189,11 @@ int main(int argc, char** argv) {
   cout << "          height: " << height     << endl;
   cout << "           width: " << width      << endl;
 
-  typedef vector<cv::Mat>                                            FramesVec;
-  vector<cv::Mat> frames;
+  typedef vector<Mat>                                            FramesVec;
+  vector<Mat> frames;
   frames.reserve(decoder.get(CV_CAP_PROP_FRAME_COUNT));
 
-  cv::Mat frame;
+  Mat frame;
 
   while (decoder.read(frame))
     frames.push_back(frame.clone());
@@ -209,7 +208,7 @@ int main(int argc, char** argv) {
   cout << "Start processing..." << endl;
 
   /* Initialization of the background matrix. */
-  cv::Mat background = cv::Mat(height, width, CV_8UC3);
+  Mat background = Mat(height, width, CV_8UC3);
 
   /* Initialization of the ROIs. */
   Utils::ROIs rois = Utils::getROIs(height, width); // Pixel-level.
@@ -219,17 +218,17 @@ int main(int argc, char** argv) {
   cout << "Size of the kernel: " << ((min(height, width) / nParam) | 1) << endl;
 
   /* Initialization of the maps matrices. */
-  cv::Mat motionScores;
-  cv::Mat quantitiesMotion;
+  Mat motionScores;
+  Mat quantitiesMotion;
 
-  motionScores = cv::Mat(height, width, CV_32SC1);
-  quantitiesMotion = cv::Mat(height, width, filter.getOpenCVEncoding());
+  motionScores = Mat(height, width, CV_32SC1);
+  quantitiesMotion = Mat(height, width, filter.getOpenCVEncoding());
 
   /* Initialization of the history structure. */
-  boost::shared_ptr<PatchesHistory> history = boost::make_shared<PatchesHistory>(rois, sParam);
+  std::shared_ptr<PatchesHistory> history = std::make_shared<PatchesHistory>(rois, sParam);
 
   /* Misc initializations. */
-  boost::shared_ptr<FrameDifferenceC1L1> fdiff;// = NULL;
+  std::shared_ptr<FrameDifferenceC1L1> fdiff;
   bool firstFrame = true;
   int numFrame = -1;
 
@@ -280,16 +279,14 @@ int main(int argc, char** argv) {
   }
 
   /* Compute background and write it. */
-  string outputFile =
-    output + "/" + "output"      + "_"   +
-    lexical_cast<string>(sParam) + "_"   +
-    lexical_cast<string>(nParam) + ".png";
+  stringstream outputFile;
+  outputFile << output << "/output_" << sParam << "_" << nParam << ".png";
 
   /* Compute background and write it. */
   history->median(background, sParam);
 
   cout << "Writing " << outputFile << "..." << endl;
-  cv::imwrite(outputFile, background);
+  imwrite(outputFile.str(), background);
 
   /* Cleaning. */
   if (visualization) {
