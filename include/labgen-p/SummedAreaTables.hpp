@@ -1,5 +1,6 @@
 /**
- * Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2016
+ * Copyright - Sébastien Piérard <sebastien.pierard@ulg.ac.be> - 2016
+ * Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be>         - 2016
  * http://www.montefiore.ulg.ac.be/~blaugraud
  * http://www.telecom.ulg.ac.be/research/sbg
  *
@@ -16,38 +17,40 @@
  * You should have received a copy of the GNU General Public License
  * along with BGSLibrary.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "FrameDifferenceC1L1.hpp"
+#pragma once
 
 #include <algorithm>
-#include <cmath>
-#include <cstdlib>
+#include <stdexcept>
+
+#include <opencv2/core/core.hpp>
 
 /* ========================================================================== *
- * FrameDifferenceC1L1                                                        *
+ * SummedAreaTables                                                           *
  * ========================================================================== */
 
-void FrameDifferenceC1L1::process(const cv::Mat& img_input, cv::Mat& proba_map) {
-  if(img_input.empty())
-    return;
+/**
+ * This class implements the method known as "Integral Image Representation"
+ * or "Summed area tables" introduced by F. Crown at SIGGRAPH 1984.
+ */
+template <typename T>
+class SummedAreaTables {
+  private :
 
-  cv::Mat cinput;
+    int w;
+    int h;
+    T* sum;
 
-  if (img_input.channels() != 1)
-    cv::cvtColor(img_input, cinput, CV_BGR2GRAY);
-  else
-    cinput = img_input;
+  public :
 
-  if(img_input_prev.empty()) {
-    cinput.copyTo(img_input_prev);
-    return;
-  }
+    SummedAreaTables(const cv::Mat& mat);
 
-  const unsigned char* input      = cinput.data;
-  const unsigned char* input_prev = img_input_prev.data;
-              int32_t* proba      = reinterpret_cast<int32_t*>(proba_map.data);
+    virtual ~SummedAreaTables();
 
-  for (int i = 0; i < img_input.rows * img_input.cols; ++i)
-    *(proba++) = abs((int32_t)(*(input++)) - *(input_prev++));
+    T getIntegral(int row, int col) const;
 
-  cinput.copyTo(img_input_prev);
-}
+    T getIntegral(int min_row, int max_row, int min_col, int max_col) const;
+};
+
+#define _SUMMED_AREA_TABLES_TPP_
+#include "SummedAreaTables.tpp"
+#undef  _SUMMED_AREA_TABLES_TPP_

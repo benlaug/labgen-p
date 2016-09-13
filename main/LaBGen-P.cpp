@@ -31,10 +31,10 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "FrameDifferenceC1L1.hpp"
-#include "History.hpp"
-#include "MotionProba.hpp"
-#include "Utils.hpp"
+#include <labgen-p/FrameDifferenceC1L1.hpp>
+#include <labgen-p/History.hpp>
+#include <labgen-p/MotionProba.hpp>
+#include <labgen-p/Utils.hpp>
 
 using namespace std;
 using namespace boost;

@@ -18,7 +18,7 @@
  * along with BGSLibrary.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef    _SUMMED_AREA_TABLES_TPP_
-#error "SummedAreaTables.h must be included instead of SummedAreaTables.tpp"
+#error "SummedAreaTables.hpp must be included instead of SummedAreaTables.tpp"
 #else
 
 /* ========================================================================== *

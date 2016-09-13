@@ -24,7 +24,7 @@
 #include <sstream>
 #include <vector>
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
 
 #include "Utils.hpp"
 
@@ -207,22 +207,22 @@ struct History {
     size_t middle = _size / 2;
 
     if (_size & 1) {
-      nth_element(bufferR.begin(), bufferR.begin() + middle, bufferR.begin() + _size);
-      nth_element(bufferG.begin(), bufferG.begin() + middle, bufferG.begin() + _size);
-      nth_element(bufferB.begin(), bufferB.begin() + middle, bufferB.begin() + _size);
+      std::nth_element(bufferR.begin(), bufferR.begin() + middle, bufferR.begin() + _size);
+      std::nth_element(bufferG.begin(), bufferG.begin() + middle, bufferG.begin() + _size);
+      std::nth_element(bufferB.begin(), bufferB.begin() + middle, bufferB.begin() + _size);
 
       result[0] = bufferR[middle];
       result[1] = bufferG[middle];
       result[2] = bufferB[middle];
     }
     else {
-      nth_element(bufferR.begin(), bufferR.begin() + (middle - 1), bufferR.begin() + _size);
-      nth_element(bufferG.begin(), bufferG.begin() + (middle - 1), bufferG.begin() + _size);
-      nth_element(bufferB.begin(), bufferB.begin() + (middle - 1), bufferB.begin() + _size);
+      std::nth_element(bufferR.begin(), bufferR.begin() + (middle - 1), bufferR.begin() + _size);
+      std::nth_element(bufferG.begin(), bufferG.begin() + (middle - 1), bufferG.begin() + _size);
+      std::nth_element(bufferB.begin(), bufferB.begin() + (middle - 1), bufferB.begin() + _size);
 
-      nth_element(bufferR.begin() + middle, bufferR.begin() + middle, bufferR.begin() + _size);
-      nth_element(bufferG.begin() + middle, bufferG.begin() + middle, bufferG.begin() + _size);
-      nth_element(bufferB.begin() + middle, bufferB.begin() + middle, bufferB.begin() + _size);
+      std::nth_element(bufferR.begin() + middle, bufferR.begin() + middle, bufferR.begin() + _size);
+      std::nth_element(bufferG.begin() + middle, bufferG.begin() + middle, bufferG.begin() + _size);
+      std::nth_element(bufferB.begin() + middle, bufferB.begin() + middle, bufferB.begin() + _size);
 
       result[0] = (((int)bufferR[middle - 1]) + ((int)bufferR[middle])) / 2;
       result[1] = (((int)bufferG[middle - 1]) + ((int)bufferG[middle])) / 2;
