@@ -15,7 +15,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with BGSLibrary.  If not, see <http://www.gnu.org/licenses/>.
+ * along with LaBGen-P.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef    _SUMMED_AREA_TABLES_TPP_
 #error "SummedAreaTables.hpp must be included instead of SummedAreaTables.tpp"
