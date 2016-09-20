@@ -88,6 +88,8 @@ namespace labgen_p {
       );
 
       void median(unsigned char* result, size_t size = ~0) const;
+
+      bool empty() const;
   };
 
   /* ======================================================================== *
@@ -102,7 +104,7 @@ namespace labgen_p {
     protected:
 
       PatchesHistoryVec p_history;
-      const Utils::ROIs& rois;
+      Utils::ROIs rois;
 
     public:
 
@@ -113,6 +115,8 @@ namespace labgen_p {
       );
 
       void median(cv::Mat& result, size_t size = ~0) const;
+
+      bool empty() const;
   };
 
 #define _LABGEN_P_HISTORY_IPP_

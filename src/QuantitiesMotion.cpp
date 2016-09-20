@@ -19,7 +19,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-#include "../include/labgen-p/QuantitiesMotion.hpp"
+#include <labgen-p/QuantitiesMotion.hpp>
 
 using namespace std;
 using namespace cv;

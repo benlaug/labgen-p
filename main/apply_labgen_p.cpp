@@ -22,7 +22,6 @@
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
-#include <memory>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -32,10 +31,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#include <labgen-p/FrameDifferenceC1L1.hpp>
-#include <labgen-p/History.hpp>
-#include <labgen-p/QuantitiesMotion.hpp>
-#include <labgen-p/Utils.hpp>
+#include <labgen-p/LaBGen_P.hpp>
 
 using namespace cv;
 using namespace std;
@@ -56,7 +52,7 @@ int main(int argc, char** argv) {
     "LaBGen-P - Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2016\n"
     "http://www.montefiore.ulg.ac.be/~blaugraud\n"
     "http://www.telecom.ulg.ac.be/labgen\n\n"
-    "Usage: ./LaBGen-P [options]"
+    "Usage: ./apply_labgen_p [options]"
   );
 
   opt_desc.add_options()
@@ -214,43 +210,15 @@ int main(int argc, char** argv) {
   /* Initialization of the background matrix. */
   Mat background = Mat(height, width, CV_8UC3);
 
-  /* Initialization of the ROIs. */
-  Utils::ROIs rois = Utils::getROIs(height, width); // Pixel-level.
-
-  /* Initialization of the filter. */
-  QuantitiesMotion filter((min(height, width) / n_param) | 1);
-  cout << "Size of the kernel: " << ((min(height, width) / n_param) | 1);
-  cout << endl;
-
-  /* Initialization of the maps matrices. */
-  Mat motion_map;
-  Mat quantities_of_motion;
-
-  motion_map = Mat(height, width, CV_32SC1);
-  quantities_of_motion = Mat(height, width, filter.getOpenCVEncoding());
-
-  /* Initialization of the history structure. */
-  std::shared_ptr<PatchesHistory> history =
-    std::make_shared<PatchesHistory>(rois, s_param);
-
-  /* Misc initializations. */
-  std::shared_ptr<FrameDifferenceC1L1> f_diff;
-  bool first_frame = true;
+  /* Initialization of the LaBGen-P algorithm. */
+  LaBGen_P labgen_p(height, width, s_param, n_param);
 
   /* Processing loop. */
-  cout << endl << "Processing...";
+  cout << endl << "Processing..." << endl;
+  bool first_frame = true;
 
   for (auto it = frames.begin(), end = frames.end(); it != end; ++it) {
-    /* Algorithm instantiation. */
-    if (first_frame)
-      f_diff = std::make_shared<FrameDifferenceC1L1>();
-
-    /* Background subtraction. */
-    f_diff->compute(*it, motion_map);
-
-    /* Visualization of the input frame. */
-    if (visualization)
-      imshow("Input video", *it);
+    labgen_p.insert(*it);
 
     /* Skipping first frame. */
     if (first_frame) {
@@ -262,25 +230,14 @@ int main(int argc, char** argv) {
       continue;
     }
 
-    /* Filtering motion map to produce quantities of motion. */
-    if (!motion_map.empty()) {
-      filter.compute(motion_map, quantities_of_motion);
-
-      /* Visualization of the quantities of motion. */
-      if (visualization)
-        imshow("Quantities of motion", quantities_of_motion);
-    }
-
-    /* Insert the current frame along with the quantities of motion into the
-     * history.
-     */
-    history->insert(quantities_of_motion, *it);
-
-    /* Visualization of the estimated background. */
+    /* Visualization. */
     if (visualization) {
-      history->median(background, s_param);
+      imshow("Input video", *it);
+      imshow("Quantities of motion", labgen_p.get_quantities_of_motion());
 
+      labgen_p.get_background(background);
       imshow("Estimated background", background);
+
       cvWaitKey(1);
     }
   }
@@ -290,7 +247,7 @@ int main(int argc, char** argv) {
   output_file << output << "/output_" << s_param << "_" << n_param << ".png";
 
   /* Compute background and write it. */
-  history->median(background, s_param);
+  labgen_p.get_background(background);
 
   cout << "Writing " << output_file.str() << "..." << endl;
   imwrite(output_file.str(), background);

@@ -165,6 +165,12 @@ void History::median(unsigned char* result, size_t size) const {
   }
 }
 
+/******************************************************************************/
+
+bool History::empty() const {
+  return history.empty();
+}
+
 /* ========================================================================== *
  * PatchesHistory                                                             *
  * ========================================================================== */
@@ -196,4 +202,15 @@ void PatchesHistory::median(Mat& result, size_t size) const {
 
   for (size_t i = 0, j = 0; i < rois.size(); ++i, j += 3)
     p_history[i].median(result_buffer + j, size);
+}
+
+/******************************************************************************/
+
+bool PatchesHistory::empty() const {
+ for (History h : p_history) {
+   if (h.empty())
+     return true;
+ }
+
+ return false;
 }
