@@ -19,22 +19,23 @@
 #pragma once
 
 #include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
 
-/* ========================================================================== *
- * FrameDifferenceC1L1                                                        *
- * ========================================================================== */
+namespace labgen_p {
+  /* ======================================================================== *
+   * FrameDifferenceC1L1                                                      *
+   * ======================================================================== */
 
-class FrameDifferenceC1L1 {
-  private:
+  class FrameDifferenceC1L1 {
+    private:
 
-    cv::Mat img_input_prev;
+      cv::Mat previous_image;
 
-  public:
+    public:
 
-    FrameDifferenceC1L1() {}
+      FrameDifferenceC1L1() {}
 
-    ~FrameDifferenceC1L1() {}
+      virtual ~FrameDifferenceC1L1() {}
 
-    void process(const cv::Mat& img_input, cv::Mat& proba_map);
-};
+      void compute(const cv::Mat& image, cv::Mat& motion_map);
+  };
+} /* _NS_labgpen_p_ */

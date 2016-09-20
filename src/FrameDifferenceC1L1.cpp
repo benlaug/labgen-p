@@ -20,34 +20,40 @@
 #include <cmath>
 #include <cstdlib>
 
+#include <opencv2/imgproc/imgproc.hpp>
+
 #include <labgen-p/FrameDifferenceC1L1.hpp>
+
+using namespace std;
+using namespace cv;
+using namespace labgen_p;
 
 /* ========================================================================== *
  * FrameDifferenceC1L1                                                        *
  * ========================================================================== */
 
-void FrameDifferenceC1L1::process(const cv::Mat& img_input, cv::Mat& proba_map) {
-  if(img_input.empty())
+void FrameDifferenceC1L1::compute(const Mat& image, Mat& motion_map) {
+  if(image.empty())
     return;
 
-  cv::Mat cinput;
+  Mat cinput;
 
-  if (img_input.channels() != 1)
-    cv::cvtColor(img_input, cinput, CV_BGR2GRAY);
+  if (image.channels() != 1)
+    cvtColor(image, cinput, CV_BGR2GRAY);
   else
-    cinput = img_input;
+    cinput = image;
 
-  if(img_input_prev.empty()) {
-    cinput.copyTo(img_input_prev);
+  if(previous_image.empty()) {
+    cinput.copyTo(previous_image);
     return;
   }
 
   const unsigned char* input      = cinput.data;
-  const unsigned char* input_prev = img_input_prev.data;
-              int32_t* proba      = reinterpret_cast<int32_t*>(proba_map.data);
+  const unsigned char* input_prev = previous_image.data;
+              int32_t* proba      = reinterpret_cast<int32_t*>(motion_map.data);
 
-  for (int i = 0; i < img_input.rows * img_input.cols; ++i)
+  for (int i = 0; i < image.total(); ++i)
     *(proba++) = abs((int32_t)(*(input++)) - *(input_prev++));
 
-  cinput.copyTo(img_input_prev);
+  cinput.copyTo(previous_image);
 }

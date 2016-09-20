@@ -17,10 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with LaBGen-P.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef    _SUMMED_AREA_TABLES_TPP_
+#ifndef    _LABGEN_P_SUMMED_AREA_TABLES_TPP_
 #error "SummedAreaTables.hpp must be included instead of SummedAreaTables.tpp"
 #else
-
 /* ========================================================================== *
  * SummedAreaTables                                                           *
  * ========================================================================== */
@@ -78,5 +77,4 @@ T SummedAreaTables<T>::getIntegral(
     getIntegral(max_row    , min_col - 1) +
     getIntegral(min_row - 1, min_col - 1) ;
 }
-
-#endif /* _SUMMED_AREA_TABLES_TPP_ */
+#endif /* _LABGEN_P_SUMMED_AREA_TABLES_TPP_ */

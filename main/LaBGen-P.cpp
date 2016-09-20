@@ -18,6 +18,8 @@
  */
 #include <algorithm>
 #include <cstddef>
+#include <cstdint>
+#include <cstdlib>
 #include <iomanip>
 #include <iostream>
 #include <memory>
@@ -32,31 +34,32 @@
 
 #include <labgen-p/FrameDifferenceC1L1.hpp>
 #include <labgen-p/History.hpp>
-#include <labgen-p/MotionProba.hpp>
 #include <labgen-p/Utils.hpp>
+#include "../include/labgen-p/QuantitiesMotion.hpp"
 
 using namespace cv;
 using namespace std;
 using namespace boost;
 using namespace boost::program_options;
+using namespace labgen_p;
 
 /******************************************************************************
  * Main program                                                               *
  ******************************************************************************/
 
 int main(int argc, char** argv) {
-  /***************************************************************************
-   * Argument(s) handling.                                                   *
-   ***************************************************************************/
+  /****************************************************************************
+   * Argument(s) handling.                                                    *
+   ****************************************************************************/
 
-  options_description optDesc(
-    string("LaBGen-P - Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2016\n") +
-    "http://www.montefiore.ulg.ac.be/~blaugraud\n"                                    +
-    "http://www.telecom.ulg.ac.be/labgen\n\n"                                         +
-    "Usage: LaBGen-P [options]"
+  options_description opt_desc(
+    "LaBGen-P - Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2016\n"
+    "http://www.montefiore.ulg.ac.be/~blaugraud\n"
+    "http://www.telecom.ulg.ac.be/labgen\n\n"
+    "Usage: ./LaBGen-P [options]"
   );
 
-  optDesc.add_options()
+  opt_desc.add_options()
     (
       "help,h",
       "print this help message"
@@ -91,13 +94,13 @@ int main(int argc, char** argv) {
     )
   ;
 
-  variables_map varsMap;
-  store(parse_command_line(argc, argv, optDesc), varsMap);
-  notify(varsMap);
+  variables_map vars_map;
+  store(parse_command_line(argc, argv, opt_desc), vars_map);
+  notify(vars_map);
 
   /* Help message. */
-  if (varsMap.count("help")) {
-    cout << optDesc << endl;
+  if (vars_map.count("help")) {
+    cout << opt_desc << endl;
     return EXIT_SUCCESS;
   }
 
@@ -118,79 +121,79 @@ int main(int argc, char** argv) {
    * Extract parameters and sanity check.
    */
 
-  int32_t sParam = 0;
-  int32_t nParam = 0;
+  int32_t s_param = 0;
+  int32_t n_param = 0;
 
   /* "input" */
-  if (!varsMap.count("input"))
+  if (!vars_map.count("input"))
     throw runtime_error("You must provide the path of the input sequence!");
 
-  string sequence(varsMap["input"].as<string>());
+  string sequence(vars_map["input"].as<string>());
 
   /* "output" */
-  if (!varsMap.count("output"))
+  if (!vars_map.count("output"))
     throw runtime_error("You must provide the path of the output folder!");
 
-  string output(varsMap["output"].as<string>());
+  string output(vars_map["output"].as<string>());
 
   /* "default" */
-  bool defaultSet = varsMap.count("default");
+  bool default_set = vars_map.count("default");
 
-  if (defaultSet) {
-    sParam = 19;
-    nParam = 3;
+  if (default_set) {
+    s_param = 19;
+    n_param = 3;
   }
 
   /* Other parameters. */
-  if (!defaultSet) {
+  if (!default_set) {
     /* "s-parameter" */
-    if (!varsMap.count("s-parameter"))
+    if (!vars_map.count("s-parameter"))
       throw runtime_error("You must provide the S parameter!");
 
-    sParam = varsMap["s-parameter"].as<int32_t>();
+    s_param = vars_map["s-parameter"].as<int32_t>();
 
-    if (sParam < 1)
+    if (s_param < 1)
       throw runtime_error("The S parameter must be positive!");
 
     /* "n-parameter" */
-    if (!varsMap.count("n-parameter"))
+    if (!vars_map.count("n-parameter"))
       throw runtime_error("You must provide the N parameter!");
 
-    nParam = varsMap["n-parameter"].as<int32_t>();
+    n_param = vars_map["n-parameter"].as<int32_t>();
 
-    if (nParam < 1)
+    if (n_param < 1)
       throw runtime_error("The N parameter must be positive!");
   }
 
   /* "visualization" */
-  bool visualization = varsMap.count("visualization");
+  bool visualization = vars_map.count("visualization");
 
   /* Display parameters to the user. */
   cout << "Input sequence: "      << sequence      << endl;
   cout << "   Output path: "      << output        << endl;
-  cout << "             S: "      << sParam        << endl;
-  cout << "             N: "      << nParam      << endl;
+  cout << "             S: "      << s_param       << endl;
+  cout << "             N: "      << n_param       << endl;
   cout << " Visualization: "      << visualization << endl;
   cout << endl;
 
-  /***************************************************************************
-   * Reading sequence.                                                       *
-   ***************************************************************************/
+  /****************************************************************************
+   * Reading sequence.                                                        *
+   ****************************************************************************/
 
   VideoCapture decoder(sequence);
 
   if (!decoder.isOpened())
     throw runtime_error("Cannot open the '" + sequence + "' sequence.");
 
-  int32_t height     = decoder.get(CV_CAP_PROP_FRAME_HEIGHT);
-  int32_t width      = decoder.get(CV_CAP_PROP_FRAME_WIDTH);
+  int32_t height = decoder.get(CV_CAP_PROP_FRAME_HEIGHT);
+  int32_t width  = decoder.get(CV_CAP_PROP_FRAME_WIDTH);
 
   cout << "Reading sequence " << sequence << "..." << endl;
 
   cout << "          height: " << height     << endl;
   cout << "           width: " << width      << endl;
 
-  typedef vector<Mat>                                            FramesVec;
+  typedef vector<Mat>                                                FramesVec;
   vector<Mat> frames;
   frames.reserve(decoder.get(CV_CAP_PROP_FRAME_COUNT));
 
@@ -202,9 +205,9 @@ int main(int argc, char** argv) {
   decoder.release();
   cout << frames.size() << " frames read." << endl << endl;
 
-  /***************************************************************************
-   * Processing.                                                             *
-   ***************************************************************************/
+  /****************************************************************************
+   * Processing.                                                              *
+   ****************************************************************************/
 
   cout << "Start processing..." << endl;
 
@@ -215,64 +218,63 @@ int main(int argc, char** argv) {
   Utils::ROIs rois = Utils::getROIs(height, width); // Pixel-level.
 
   /* Initialization of the filter. */
-  CounterMotionProba filter((min(height, width) / nParam) | 1);
-  cout << "Size of the kernel: " << ((min(height, width) / nParam) | 1) << endl;
+  QuantitiesMotion filter((min(height, width) / n_param) | 1);
+  cout << "Size of the kernel: " << ((min(height, width) / n_param) | 1);
+  cout << endl;
 
   /* Initialization of the maps matrices. */
-  Mat motionScores;
-  Mat quantitiesMotion;
+  Mat motion_map;
+  Mat quantities_of_motion;
 
-  motionScores = Mat(height, width, CV_32SC1);
-  quantitiesMotion = Mat(height, width, filter.getOpenCVEncoding());
+  motion_map = Mat(height, width, CV_32SC1);
+  quantities_of_motion = Mat(height, width, filter.getOpenCVEncoding());
 
   /* Initialization of the history structure. */
-  std::shared_ptr<PatchesHistory> history = std::make_shared<PatchesHistory>(rois, sParam);
+  std::shared_ptr<PatchesHistory> history =
+    std::make_shared<PatchesHistory>(rois, s_param);
 
   /* Misc initializations. */
-  std::shared_ptr<FrameDifferenceC1L1> fdiff;
-  bool firstFrame = true;
-  int numFrame = -1;
+  std::shared_ptr<FrameDifferenceC1L1> f_diff;
+  bool first_frame = true;
+  int num_frame = -1;
 
   /* Processing loop. */
   cout << endl << "Processing...";
 
-  for (FramesVec::const_iterator it = frames.begin(), end = frames.end(); it != end; ++it) {
-    ++numFrame;
+  for (const Mat& current_frame : frames) {
+    ++num_frame;
 
     /* Algorithm instantiation. */
-    if (firstFrame)
-      fdiff = make_shared<FrameDifferenceC1L1>();
+    if (first_frame)
+      f_diff = std::make_shared<FrameDifferenceC1L1>();
 
     /* Background subtraction. */
-    fdiff->process((*it).clone(), motionScores);
+    f_diff->compute(current_frame, motion_map);
 
     /* Visualization of the input frame and its probability map. */
     if (visualization)
-      imshow("Input video", (*it));
+      imshow("Input video", current_frame);
 
     /* Skipping first frame. */
-    if (firstFrame) {
+    if (first_frame) {
       cout << "Skipping first frame..." << endl;
-
-      ++it;
-      firstFrame = false;
-
+      first_frame = false;
       continue;
     }
 
     /* Filtering probability map. */
-    if (!motionScores.empty()) {
-      filter.compute(motionScores, quantitiesMotion);
+    if (!motion_map.empty()) {
+      filter.compute(motion_map, quantities_of_motion);
 
       if (visualization)
-        imshow("Quantities of motion", quantitiesMotion);
+        imshow("Quantities of motion", quantities_of_motion);
     }
 
     /* Insert the current frame and its probability map into the history. */
-    history->insert(quantitiesMotion, (*it));
+    history->insert(quantities_of_motion, current_frame);
 
     if (visualization) {
-      history->median(background, sParam);
+      history->median(background, s_param);
 
       imshow("Estimated background", background);
       cvWaitKey(1);
@@ -280,14 +282,14 @@ int main(int argc, char** argv) {
   }
 
   /* Compute background and write it. */
-  stringstream outputFile;
-  outputFile << output << "/output_" << sParam << "_" << nParam << ".png";
+  stringstream output_file;
+  output_file << output << "/output_" << s_param << "_" << n_param << ".png";
 
   /* Compute background and write it. */
-  history->median(background, sParam);
+  history->median(background, s_param);
 
-  cout << "Writing " << outputFile.str() << "..." << endl;
-  imwrite(outputFile.str(), background);
+  cout << "Writing " << output_file.str() << "..." << endl;
+  imwrite(output_file.str(), background);
 
   /* Cleaning. */
   if (visualization) {

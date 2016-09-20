@@ -18,10 +18,8 @@
  */
 #pragma once
 
-#include <algorithm>
 #include <cstddef>
 #include <cstdint>
-#include <sstream>
 #include <vector>
 
 #include <opencv2/core/core.hpp>
@@ -30,261 +28,91 @@
 
 #define CHANNELS                                                              3
 
-/* ========================================================================== *
- * HistoryMat                                                                 *
- * ========================================================================== */
+namespace labgen_p {
+  /* ======================================================================== *
+   * HistoryMat                                                               *
+   * ======================================================================== */
 
-struct HistoryMat {
-  uint8_t mat[3];
-  uint32_t positives;
+  class HistoryMat {
+      friend bool  operator<(const HistoryMat& lhs, const HistoryMat& rhs);
+      friend bool operator<=(const HistoryMat& lhs, const HistoryMat& rhs);
+      friend bool operator==(const HistoryMat& lhs, const HistoryMat& rhs);
+      friend bool  operator<(const HistoryMat& lhs, const uint32_t&   rhs);
+      friend bool operator<=(const HistoryMat& lhs, const uint32_t&   rhs);
+      friend bool operator==(const HistoryMat& lhs, const uint32_t&   rhs);
+      friend bool  operator<(const uint32_t&   lhs, const HistoryMat& rhs);
+      friend bool operator<=(const uint32_t&   lhs, const HistoryMat& rhs);
+      friend bool operator==(const uint32_t&   lhs, const HistoryMat& rhs);
 
-  /****************************************************************************/
+    protected:
 
-  HistoryMat(const unsigned char* mat, const uint32_t positives) :
-  positives(positives) {
-    this->mat[0] = mat[0];
-    this->mat[1] = mat[1];
-    this->mat[2] = mat[2];
-  }
+      uint8_t mat[3];
+      uint32_t positives;
 
-  /****************************************************************************/
+    public:
 
-  HistoryMat(const HistoryMat& copy) :
-  positives(copy.positives) {
-    mat[0] = copy.mat[0];
-    mat[1] = copy.mat[1];
-    mat[2] = copy.mat[2];
-  }
+      HistoryMat(const unsigned char* mat, const uint32_t positives);
 
-  /****************************************************************************/
+      HistoryMat(const HistoryMat& copy);
 
-  HistoryMat& operator=(const HistoryMat& copy) {
-    mat[0] = copy.mat[0];
-    mat[1] = copy.mat[1];
-    mat[2] = copy.mat[2];
+      HistoryMat& operator=(const HistoryMat& copy);
 
-    positives = copy.positives;
+      uint8_t operator[](size_t i) const;
+  };
 
-    return *this;
-  }
-};
+  /* ======================================================================== *
+   * History                                                                  *
+   * ======================================================================== */
 
-/******************************************************************************
- * Operator(s) overloading                                                    *
- ******************************************************************************/
+  class History {
+    public:
 
-inline bool operator<(const HistoryMat& lhs, const HistoryMat& rhs) {
-  return lhs.positives < rhs.positives;
-}
+      typedef std::vector<HistoryMat>                               HistoryVec;
 
-/******************************************************************************/
+    protected:
 
-inline bool operator<=(const HistoryMat& lhs, const HistoryMat& rhs) {
-  return lhs.positives <= rhs.positives;
-}
+      HistoryVec history;
+      size_t bufferSize;
 
-/******************************************************************************/
+    public:
 
-inline bool operator==(const HistoryMat& lhs, const HistoryMat& rhs) {
-  return lhs.positives == rhs.positives;
-}
+      explicit History(size_t bufferSize);
 
-/******************************************************************************/
+      HistoryVec& operator*();
 
-inline bool operator<(const HistoryMat& lhs, const uint32_t& rhs) {
-  return lhs.positives < rhs;
-}
+      const HistoryVec& operator*() const;
 
-/******************************************************************************/
+      void insert(const int32_t* probabilityMap, const unsigned char* frame);
 
-inline bool operator<=(const HistoryMat& lhs, const uint32_t& rhs) {
-  return lhs.positives <= rhs;
-}
+      void median(unsigned char* result, size_t size = ~0) const;
+  };
 
-/******************************************************************************/
+  /* ======================================================================== *
+   * PatchesHistory                                                           *
+   * ======================================================================== */
 
-inline bool operator==(const HistoryMat& lhs, const uint32_t& rhs) {
-  return lhs.positives == rhs;
-}
+  class PatchesHistory {
+    protected:
 
-/******************************************************************************/
+      typedef std::vector<History>                           PatchesHistoryVec;
 
-inline bool operator<(const uint32_t& lhs, const HistoryMat& rhs) {
-  return lhs < rhs.positives;
-}
+    protected:
 
-/******************************************************************************/
+      PatchesHistoryVec pHistory;
+      const Utils::ROIs& rois;
 
-inline bool operator<=(const uint32_t& lhs, const HistoryMat& rhs) {
-  return lhs <= rhs.positives;
-}
+    public:
 
-/******************************************************************************/
+      PatchesHistory(const Utils::ROIs& rois, size_t bufferSize);
 
-inline bool operator==(const uint32_t& lhs, const HistoryMat& rhs) {
-  return lhs == rhs.positives;
-}
+      PatchesHistory(const Utils::ROIs& rois, std::vector<size_t> bufferSize);
 
-/* ========================================================================== *
- * History                                                                    *
- * ========================================================================== */
+      void insert(const cv::Mat& probabilityMap, const cv::Mat& frame);
 
-struct History {
-  typedef std::vector<HistoryMat>                                   HistoryVec;
+      void median(cv::Mat& result, size_t size = ~0) const;
+  };
 
-  /****************************************************************************/
-
-  HistoryVec history;
-  size_t bufferSize;
-
-  /****************************************************************************/
-
-  explicit History(size_t bufferSize) : history(), bufferSize(bufferSize) {
-    history.reserve(bufferSize + 1);
-  }
-
-  /****************************************************************************/
-
-  HistoryVec& operator*() { return history; }
-
-  /****************************************************************************/
-
-  const HistoryVec& operator*() const { return history; }
-
-  /****************************************************************************/
-
-  virtual void insert(const int32_t* probabilityMap, const unsigned char* frame) {
-    const int32_t* mapBuffer = probabilityMap;
-    int32_t positives = *(mapBuffer);
-
-    if (history.empty())
-      history.push_back(HistoryMat(frame, positives));
-    else {
-      bool inserted = false;
-
-      for (
-        HistoryVec::iterator it = history.begin(), end = history.end();
-        it != end;
-        ++it
-      ) {
-        if (positives <= (*it)) {
-          history.insert(it, HistoryMat(frame, positives));
-          inserted = true;
-
-          if (history.size() > bufferSize)
-            history.erase(history.end() - 1);
-
-          break;
-        }
-      }
-
-      if ((history.size() < bufferSize) && !inserted)
-        history.push_back(HistoryMat(frame, positives));
-    }
-  }
-
-  /****************************************************************************/
-
-  virtual void median(unsigned char* result, size_t size = ~0) const {
-    if (history.size() == 1 || size == 1) {
-      result[0] = history[0].mat[0];
-      result[1] = history[0].mat[1];
-      result[2] = history[0].mat[2];
-    }
-
-    std::vector<unsigned char> bufferR(bufferSize);
-    std::vector<unsigned char> bufferG(bufferSize);
-    std::vector<unsigned char> bufferB(bufferSize);
-
-    size_t _size = std::min(history.size(), size);
-
-    for (size_t num = 0; num < _size; ++num) {
-      bufferR[num] = history[num].mat[0];
-      bufferG[num] = history[num].mat[1];
-      bufferB[num] = history[num].mat[2];
-    }
-
-    size_t middle = _size / 2;
-
-    if (_size & 1) {
-      std::nth_element(bufferR.begin(), bufferR.begin() + middle, bufferR.begin() + _size);
-      std::nth_element(bufferG.begin(), bufferG.begin() + middle, bufferG.begin() + _size);
-      std::nth_element(bufferB.begin(), bufferB.begin() + middle, bufferB.begin() + _size);
-
-      result[0] = bufferR[middle];
-      result[1] = bufferG[middle];
-      result[2] = bufferB[middle];
-    }
-    else {
-      std::nth_element(bufferR.begin(), bufferR.begin() + (middle - 1), bufferR.begin() + _size);
-      std::nth_element(bufferG.begin(), bufferG.begin() + (middle - 1), bufferG.begin() + _size);
-      std::nth_element(bufferB.begin(), bufferB.begin() + (middle - 1), bufferB.begin() + _size);
-
-      std::nth_element(bufferR.begin() + middle, bufferR.begin() + middle, bufferR.begin() + _size);
-      std::nth_element(bufferG.begin() + middle, bufferG.begin() + middle, bufferG.begin() + _size);
-      std::nth_element(bufferB.begin() + middle, bufferB.begin() + middle, bufferB.begin() + _size);
-
-      result[0] = (((int)bufferR[middle - 1]) + ((int)bufferR[middle])) / 2;
-      result[1] = (((int)bufferG[middle - 1]) + ((int)bufferG[middle])) / 2;
-      result[2] = (((int)bufferB[middle - 1]) + ((int)bufferB[middle])) / 2;
-    }
-  }
-};
-
-/* ========================================================================== *
- * PatchesHistory                                                             *
- * ========================================================================== */
-
-struct PatchesHistory {
-  typedef std::vector<History>                 PatchesHistoryVec;
-
-  /****************************************************************************/
-
-  PatchesHistoryVec pHistory;
-  const Utils::ROIs& rois;
-
-  /****************************************************************************/
-
-  PatchesHistory(const Utils::ROIs& rois, size_t bufferSize) :
-    pHistory(), rois(rois) {
-
-    pHistory.reserve(rois.size());
-
-    for (size_t i = 0; i < rois.size(); ++i)
-      pHistory.push_back(History(bufferSize));
-  }
-
-  /****************************************************************************/
-
-  PatchesHistory(const Utils::ROIs& rois, std::vector<size_t> bufferSize) :
-    pHistory(), rois(rois) {
-
-    pHistory.reserve(rois.size());
-
-    for (size_t i = 0; i < rois.size(); ++i)
-      pHistory.push_back(History(bufferSize[i]));
-  }
-
-  /****************************************************************************/
-
-  virtual void insert(const cv::Mat& probabilityMap, const cv::Mat& frame) {
-    int32_t* probaData = reinterpret_cast<int32_t*>(probabilityMap.data);
-    unsigned char* frameData = frame.data;
-
-    for (int i = 0, j = 0; i < frame.rows * frame.cols; ++i, j += 3) {
-      pHistory[i].insert(
-        probaData + i,
-        frameData + j
-      );
-    }
-  }
-
-  /****************************************************************************/
-
-  virtual void median(cv::Mat& result, size_t size = ~0) const {
-    unsigned char* data = result.data;
-
-    for (size_t i = 0, j = 0; i < rois.size(); ++i, j += 3)
-      pHistory[i].median(data + j, size);
-  }
-};
+#define _LABGEN_P_HISTORY_IPP_
+#include "History.ipp"
+#undef  _LABGEN_P_HISTORY_IPP_
+} /* _NS_labgen_p_ */

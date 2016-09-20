@@ -18,28 +18,32 @@
  */
 #pragma once
 
-#include <cstddef>
-#include <string>
-#include <vector>
+#include <cstdint>
 
 #include <opencv2/core/core.hpp>
 
+#include "SummedAreaTables.hpp"
+
 namespace labgen_p {
   /* ======================================================================== *
-   * Utils                                                                    *
+   * QuantitiesMotion                                                         *
    * ======================================================================== */
 
-  class Utils {
+  class QuantitiesMotion {
+    protected:
+
+      typedef int32_t                                 QuantitiesMotionEncoding;
+
+    protected:
+
+      int size;
+
     public:
 
-      typedef std::vector<cv::Rect>                                           ROIs;
+      QuantitiesMotion(int size);
 
-    public:
+      void compute(cv::Mat& motion_map, cv::Mat& quantities_of_motion) const;
 
-      static std::string getMethod(std::string method);
-
-      static ROIs getROIs(size_t height, size_t width, size_t segments);
-
-      static ROIs getROIs(size_t height, size_t width);
+      int getOpenCVEncoding() const;
   };
 } /* _NS_labgen_p_ */
