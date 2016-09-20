@@ -43,17 +43,22 @@ void FrameDifferenceC1L1::compute(const Mat& image, Mat& motion_map) {
   else
     cinput = image;
 
-  if(previous_image.empty()) {
+  if (previous_image.empty()) {
     cinput.copyTo(previous_image);
     return;
   }
 
-  const unsigned char* input      = cinput.data;
-  const unsigned char* input_prev = previous_image.data;
-              int32_t* proba      = reinterpret_cast<int32_t*>(motion_map.data);
+  const unsigned char* image_buffer      = cinput.data;
+  const unsigned char* previous_buffer   = previous_image.data;
 
-  for (int i = 0; i < image.total(); ++i)
-    *(proba++) = abs((int32_t)(*(input++)) - *(input_prev++));
+  int32_t* motion_map_buffer =
+    reinterpret_cast<int32_t*>(motion_map.data);
+
+  for (int i = 0; i < image.total(); ++i) {
+    *(motion_map_buffer++) = abs(
+      static_cast<int32_t>(*(image_buffer++)) - *(previous_buffer++)
+    );
+  }
 
   cinput.copyTo(previous_image);
 }

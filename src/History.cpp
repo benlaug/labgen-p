@@ -68,8 +68,8 @@ uint8_t HistoryMat::operator[](size_t i) const {
  * History                                                                    *
  * ========================================================================== */
 
-History::History(size_t bufferSize) : history(), bufferSize(bufferSize) {
-  history.reserve(bufferSize + 1);
+History::History(size_t buffer_size) : history(), buffer_size(buffer_size) {
+  history.reserve(buffer_size + 1);
 }
 
 /******************************************************************************/
@@ -86,12 +86,14 @@ const History::HistoryVec& History::operator*() const {
 
 /******************************************************************************/
 
-void History::insert(const int32_t* probabilityMap, const unsigned char* frame) {
-  const int32_t* mapBuffer = probabilityMap;
-  int32_t positives = *(mapBuffer);
+void History::insert(
+  const int32_t* quantities_of_motion, const unsigned char* current_frame
+) {
+  const int32_t* qt_buffer = quantities_of_motion;
+  int32_t positives = *(qt_buffer);
 
   if (history.empty())
-    history.push_back(HistoryMat(frame, positives));
+    history.push_back(HistoryMat(current_frame, positives));
   else {
     bool inserted = false;
 
@@ -101,18 +103,18 @@ void History::insert(const int32_t* probabilityMap, const unsigned char* frame) 
       ++it
     ) {
       if (positives <= (*it)) {
-        history.insert(it, HistoryMat(frame, positives));
+        history.insert(it, HistoryMat(current_frame, positives));
         inserted = true;
 
-        if (history.size() > bufferSize)
+        if (history.size() > buffer_size)
           history.erase(history.end() - 1);
 
         break;
       }
     }
 
-    if ((history.size() < bufferSize) && !inserted)
-      history.push_back(HistoryMat(frame, positives));
+    if ((history.size() < buffer_size) && !inserted)
+      history.push_back(HistoryMat(current_frame, positives));
   }
 }
 
@@ -125,41 +127,41 @@ void History::median(unsigned char* result, size_t size) const {
     result[2] = history[0][2];
   }
 
-  vector<unsigned char> bufferR(bufferSize);
-  vector<unsigned char> bufferG(bufferSize);
-  vector<unsigned char> bufferB(bufferSize);
+  vector<unsigned char> buffer_r(buffer_size);
+  vector<unsigned char> buffer_g(buffer_size);
+  vector<unsigned char> buffer_b(buffer_size);
 
   size_t _size = min(history.size(), size);
 
   for (size_t num = 0; num < _size; ++num) {
-    bufferR[num] = history[num][0];
-    bufferG[num] = history[num][1];
-    bufferB[num] = history[num][2];
+    buffer_r[num] = history[num][0];
+    buffer_g[num] = history[num][1];
+    buffer_b[num] = history[num][2];
   }
 
   size_t middle = _size / 2;
 
   if (_size & 1) {
-    nth_element(bufferR.begin(), bufferR.begin() + middle, bufferR.begin() + _size);
-    nth_element(bufferG.begin(), bufferG.begin() + middle, bufferG.begin() + _size);
-    nth_element(bufferB.begin(), bufferB.begin() + middle, bufferB.begin() + _size);
+    nth_element(buffer_r.begin(), buffer_r.begin() + middle, buffer_r.begin() + _size);
+    nth_element(buffer_g.begin(), buffer_g.begin() + middle, buffer_g.begin() + _size);
+    nth_element(buffer_b.begin(), buffer_b.begin() + middle, buffer_b.begin() + _size);
 
-    result[0] = bufferR[middle];
-    result[1] = bufferG[middle];
-    result[2] = bufferB[middle];
+    result[0] = buffer_r[middle];
+    result[1] = buffer_g[middle];
+    result[2] = buffer_b[middle];
   }
   else {
-    nth_element(bufferR.begin(), bufferR.begin() + (middle - 1), bufferR.begin() + _size);
-    nth_element(bufferG.begin(), bufferG.begin() + (middle - 1), bufferG.begin() + _size);
-    nth_element(bufferB.begin(), bufferB.begin() + (middle - 1), bufferB.begin() + _size);
+    nth_element(buffer_r.begin(), buffer_r.begin() + (middle - 1), buffer_r.begin() + _size);
+    nth_element(buffer_g.begin(), buffer_g.begin() + (middle - 1), buffer_g.begin() + _size);
+    nth_element(buffer_b.begin(), buffer_b.begin() + (middle - 1), buffer_b.begin() + _size);
 
-    nth_element(bufferR.begin() + middle, bufferR.begin() + middle, bufferR.begin() + _size);
-    nth_element(bufferG.begin() + middle, bufferG.begin() + middle, bufferG.begin() + _size);
-    nth_element(bufferB.begin() + middle, bufferB.begin() + middle, bufferB.begin() + _size);
+    nth_element(buffer_r.begin() + middle, buffer_r.begin() + middle, buffer_r.begin() + _size);
+    nth_element(buffer_g.begin() + middle, buffer_g.begin() + middle, buffer_g.begin() + _size);
+    nth_element(buffer_b.begin() + middle, buffer_b.begin() + middle, buffer_b.begin() + _size);
 
-    result[0] = (((int)bufferR[middle - 1]) + ((int)bufferR[middle])) / 2;
-    result[1] = (((int)bufferG[middle - 1]) + ((int)bufferG[middle])) / 2;
-    result[2] = (((int)bufferB[middle - 1]) + ((int)bufferB[middle])) / 2;
+    result[0] = ((static_cast<int32_t>(buffer_r[middle - 1])) + (buffer_r[middle])) / 2;
+    result[1] = ((static_cast<int32_t>(buffer_g[middle - 1])) + (buffer_g[middle])) / 2;
+    result[2] = ((static_cast<int32_t>(buffer_b[middle - 1])) + (buffer_b[middle])) / 2;
   }
 }
 
@@ -167,43 +169,31 @@ void History::median(unsigned char* result, size_t size) const {
  * PatchesHistory                                                             *
  * ========================================================================== */
 
-PatchesHistory::PatchesHistory(const Utils::ROIs& rois, size_t bufferSize) :
+PatchesHistory::PatchesHistory(const Utils::ROIs& rois, size_t buffer_size) :
 pHistory(), rois(rois) {
   pHistory.reserve(rois.size());
 
   for (size_t i = 0; i < rois.size(); ++i)
-    pHistory.push_back(History(bufferSize));
+    pHistory.push_back(History(buffer_size));
 }
 
 /******************************************************************************/
 
-PatchesHistory::PatchesHistory(const Utils::ROIs& rois, vector<size_t> bufferSize) :
-pHistory(), rois(rois) {
-  pHistory.reserve(rois.size());
+void PatchesHistory::insert(
+  const Mat& quantities_of_motion, const Mat& current_frame
+) {
+  int32_t* qt_buffer = reinterpret_cast<int32_t*>(quantities_of_motion.data);
+  unsigned char* image_buffer = current_frame.data;
 
-  for (size_t i = 0; i < rois.size(); ++i)
-    pHistory.push_back(History(bufferSize[i]));
-}
-
-/******************************************************************************/
-
-void PatchesHistory::insert(const Mat& probabilityMap, const Mat& frame) {
-  int32_t* probaData = reinterpret_cast<int32_t*>(probabilityMap.data);
-  unsigned char* frameData = frame.data;
-
-  for (int i = 0, j = 0; i < frame.rows * frame.cols; ++i, j += 3) {
-    pHistory[i].insert(
-      probaData + i,
-      frameData + j
-    );
-  }
+  for (int i = 0, j = 0; i < current_frame.total(); ++i, j += 3)
+    pHistory[i].insert(qt_buffer + i, image_buffer + j);
 }
 
 /******************************************************************************/
 
 void PatchesHistory::median(Mat& result, size_t size) const {
-  unsigned char* data = result.data;
+  unsigned char* result_buffer = result.data;
 
   for (size_t i = 0, j = 0; i < rois.size(); ++i, j += 3)
-    pHistory[i].median(data + j, size);
+    pHistory[i].median(result_buffer + j, size);
 }

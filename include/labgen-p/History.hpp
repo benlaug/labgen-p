@@ -34,13 +34,13 @@ namespace labgen_p {
    * ======================================================================== */
 
   class HistoryMat {
-      friend bool  operator<(const HistoryMat& lhs, const HistoryMat& rhs);
+      friend bool operator< (const HistoryMat& lhs, const HistoryMat& rhs);
       friend bool operator<=(const HistoryMat& lhs, const HistoryMat& rhs);
       friend bool operator==(const HistoryMat& lhs, const HistoryMat& rhs);
-      friend bool  operator<(const HistoryMat& lhs, const uint32_t&   rhs);
+      friend bool operator< (const HistoryMat& lhs, const uint32_t&   rhs);
       friend bool operator<=(const HistoryMat& lhs, const uint32_t&   rhs);
       friend bool operator==(const HistoryMat& lhs, const uint32_t&   rhs);
-      friend bool  operator<(const uint32_t&   lhs, const HistoryMat& rhs);
+      friend bool operator< (const uint32_t&   lhs, const HistoryMat& rhs);
       friend bool operator<=(const uint32_t&   lhs, const HistoryMat& rhs);
       friend bool operator==(const uint32_t&   lhs, const HistoryMat& rhs);
 
@@ -72,17 +72,20 @@ namespace labgen_p {
     protected:
 
       HistoryVec history;
-      size_t bufferSize;
+      size_t buffer_size;
 
     public:
 
-      explicit History(size_t bufferSize);
+      explicit History(size_t buffer_size);
 
       HistoryVec& operator*();
 
       const HistoryVec& operator*() const;
 
-      void insert(const int32_t* probabilityMap, const unsigned char* frame);
+      void insert(
+        const int32_t* quantities_of_motion,
+        const unsigned char* current_frame
+      );
 
       void median(unsigned char* result, size_t size = ~0) const;
   };
@@ -103,11 +106,11 @@ namespace labgen_p {
 
     public:
 
-      PatchesHistory(const Utils::ROIs& rois, size_t bufferSize);
+      PatchesHistory(const Utils::ROIs& rois, size_t buffer_size);
 
-      PatchesHistory(const Utils::ROIs& rois, std::vector<size_t> bufferSize);
-
-      void insert(const cv::Mat& probabilityMap, const cv::Mat& frame);
+      void insert(
+        const cv::Mat& quantities_of_motion, const cv::Mat& current_frame
+      );
 
       void median(cv::Mat& result, size_t size = ~0) const;
   };

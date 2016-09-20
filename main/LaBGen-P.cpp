@@ -34,8 +34,8 @@
 
 #include <labgen-p/FrameDifferenceC1L1.hpp>
 #include <labgen-p/History.hpp>
+#include <labgen-p/QuantitiesMotion.hpp>
 #include <labgen-p/Utils.hpp>
-#include "../include/labgen-p/QuantitiesMotion.hpp"
 
 using namespace cv;
 using namespace std;
@@ -236,43 +236,47 @@ int main(int argc, char** argv) {
   /* Misc initializations. */
   std::shared_ptr<FrameDifferenceC1L1> f_diff;
   bool first_frame = true;
-  int num_frame = -1;
 
   /* Processing loop. */
   cout << endl << "Processing...";
 
-  for (const Mat& current_frame : frames) {
-    ++num_frame;
-
+  for (auto it = frames.begin(), end = frames.end(); it != end; ++it) {
     /* Algorithm instantiation. */
     if (first_frame)
       f_diff = std::make_shared<FrameDifferenceC1L1>();
 
     /* Background subtraction. */
-    f_diff->compute(current_frame, motion_map);
+    f_diff->compute(*it, motion_map);
 
-    /* Visualization of the input frame and its probability map. */
+    /* Visualization of the input frame. */
     if (visualization)
-      imshow("Input video", current_frame);
+      imshow("Input video", *it);
 
     /* Skipping first frame. */
     if (first_frame) {
       cout << "Skipping first frame..." << endl;
+
+      ++it;
       first_frame = false;
+
       continue;
     }
 
-    /* Filtering probability map. */
+    /* Filtering motion map to produce quantities of motion. */
     if (!motion_map.empty()) {
       filter.compute(motion_map, quantities_of_motion);
 
+      /* Visualization of the quantities of motion. */
       if (visualization)
         imshow("Quantities of motion", quantities_of_motion);
     }
 
-    /* Insert the current frame and its probability map into the history. */
-    history->insert(quantities_of_motion, current_frame);
+    /* Insert the current frame along with the quantities of motion into the
+     * history.
+     */
+    history->insert(quantities_of_motion, *it);
 
+    /* Visualization of the estimated background. */
     if (visualization) {
       history->median(background, s_param);
 
