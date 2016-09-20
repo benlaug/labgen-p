@@ -170,11 +170,11 @@ void History::median(unsigned char* result, size_t size) const {
  * ========================================================================== */
 
 PatchesHistory::PatchesHistory(const Utils::ROIs& rois, size_t buffer_size) :
-pHistory(), rois(rois) {
-  pHistory.reserve(rois.size());
+p_history(), rois(rois) {
+  p_history.reserve(rois.size());
 
   for (size_t i = 0; i < rois.size(); ++i)
-    pHistory.push_back(History(buffer_size));
+    p_history.push_back(History(buffer_size));
 }
 
 /******************************************************************************/
@@ -183,10 +183,10 @@ void PatchesHistory::insert(
   const Mat& quantities_of_motion, const Mat& current_frame
 ) {
   int32_t* qt_buffer = reinterpret_cast<int32_t*>(quantities_of_motion.data);
-  unsigned char* image_buffer = current_frame.data;
+  unsigned char* current_buffer = current_frame.data;
 
   for (int i = 0, j = 0; i < current_frame.total(); ++i, j += 3)
-    pHistory[i].insert(qt_buffer + i, image_buffer + j);
+    p_history[i].insert(qt_buffer + i, current_buffer + j);
 }
 
 /******************************************************************************/
@@ -195,5 +195,5 @@ void PatchesHistory::median(Mat& result, size_t size) const {
   unsigned char* result_buffer = result.data;
 
   for (size_t i = 0, j = 0; i < rois.size(); ++i, j += 3)
-    pHistory[i].median(result_buffer + j, size);
+    p_history[i].median(result_buffer + j, size);
 }

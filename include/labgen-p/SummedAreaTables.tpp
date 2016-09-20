@@ -28,15 +28,18 @@ template <typename T>
 SummedAreaTables<T>::SummedAreaTables(const cv::Mat& mat) :
 w(mat.cols),
 h(mat.rows),
-sum(new T[mat.cols * mat.rows]) {
-  if (w == 0) throw std::logic_error("Image with width == 0 are not supported");
-  if (h == 0) throw std::logic_error("Image with height == 0 are not supported");
+sum(new T[mat.total()]) {
+  if (w == 0)
+    throw std::logic_error("Image with zero width are not supported");
+
+  if (h == 0)
+    throw std::logic_error("Image with zero height are not supported");
 
   const T* buffer = reinterpret_cast<const T*>(mat.data);
 
   for (int row = 0; row < h; ++row) {
     for (int col = 0; col < w; ++col) {
-      sum [ row * w + col ] =
+      sum[row * w + col] =
         *(buffer++)                   +
         getIntegral(row - 1, col    ) +
         getIntegral(row    , col - 1) -
@@ -56,8 +59,11 @@ SummedAreaTables<T>::~SummedAreaTables() {
 
 template <typename T>
 inline T SummedAreaTables<T>::getIntegral(int row, int col) const {
-  if (row < 0) return T();
-  if (col < 0) return T();
+  if (row < 0)
+    return T();
+
+  if (col < 0)
+    return T();
 
   return sum[std::min(row, h - 1) * w + std::min(col, w - 1)];
 }
@@ -68,8 +74,11 @@ template <typename T>
 T SummedAreaTables<T>::getIntegral(
   int min_row, int max_row, int min_col, int max_col
 ) const {
-  if (min_row > max_row) return T();
-  if (min_col > max_col) return T();
+  if (min_row > max_row)
+    return T();
+
+  if (min_col > max_col)
+    return T();
 
   return
     getIntegral(max_row    , max_col    ) -

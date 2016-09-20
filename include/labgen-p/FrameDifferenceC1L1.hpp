@@ -28,7 +28,7 @@ namespace labgen_p {
   class FrameDifferenceC1L1 {
     private:
 
-      cv::Mat previous_image;
+      cv::Mat previous_frame;
 
     public:
 
@@ -36,6 +36,6 @@ namespace labgen_p {
 
       virtual ~FrameDifferenceC1L1() {}
 
-      void compute(const cv::Mat& image, cv::Mat& motion_map);
+      void compute(const cv::Mat& current_frame, cv::Mat& motion_map);
   };
 } /* _NS_labgpen_p_ */

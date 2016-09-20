@@ -41,23 +41,23 @@ void QuantitiesMotion::compute(
   if (half == 0)
     throw logic_error("Size divided by 2 is zero!");
 
-  QuantitiesMotionEncoding* outputBuffer =
+  QuantitiesMotionEncoding* output_buffer =
     reinterpret_cast<QuantitiesMotionEncoding*>(quantities_of_motion.data);
 
   SummedAreaTables<QuantitiesMotionEncoding> sums(motion_map);
 
   for (int y = 0; y < motion_map.rows; ++y) {
-    for (int x = 0; x < motion_map.cols; ++x, ++outputBuffer) {
+    for (int x = 0; x < motion_map.cols; ++x, ++output_buffer) {
       /* Computing kernel ROI. */
-      int xROI = max(x - half, 0);
-      int yROI = max(y - half, 0);
-      int widthROI =
+      int x_roi = max(x - half, 0);
+      int y_roi = max(y - half, 0);
+      int width_roi =
         min(x + half, (motion_map.cols - 1)) - max(x - half, 0) + 1;
-      int heightROI =
+      int height_roi =
         min(y + half, (motion_map.rows - 1)) - max(y - half, 0) + 1;
 
-      *outputBuffer = sums.getIntegral(
-        yROI, yROI + heightROI - 1, xROI, xROI + widthROI - 1
+      *output_buffer = sums.getIntegral(
+        y_roi, y_roi + height_roi - 1, x_roi, x_roi + width_roi - 1
       );
     }
   }

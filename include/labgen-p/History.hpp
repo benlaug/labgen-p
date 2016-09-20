@@ -101,7 +101,7 @@ namespace labgen_p {
 
     protected:
 
-      PatchesHistoryVec pHistory;
+      PatchesHistoryVec p_history;
       const Utils::ROIs& rois;
 
     public:

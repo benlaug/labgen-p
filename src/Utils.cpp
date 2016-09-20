@@ -42,48 +42,48 @@ Utils::ROIs Utils::getROIs(size_t height, size_t width, size_t segments) {
   ROIs rois;
   rois.reserve(segments * segments);
 
-  size_t patchHeight = height / segments;
-  size_t hReminder = height % segments;
+  size_t patch_height = height / segments;
+  size_t h_reminder = height % segments;
 
-  size_t patchWidth = width / segments;
-  size_t wReminder = width % segments;
+  size_t patch_width = width / segments;
+  size_t w_reminder = width % segments;
 
   /* Algorithm. */
-  size_t hReminderTmp = hReminder;
-  size_t previousY = 0;
-  size_t previousHeight = 0;
+  size_t h_reminder_tmp = h_reminder;
+  size_t previous_y = 0;
+  size_t previous_height = 0;
 
   /*
    * If the modulo X of a dimension divided by the number of segments is
    * superior to 0, then it is distributed among the X first patches.
    */
   for (size_t i = 0; i < segments; ++i) {
-    size_t wReminderTmp = wReminder;
-    size_t previousX = 0;
-    size_t previousWidth = 0;
+    size_t w_reminder_tmp = w_reminder;
+    size_t previous_x = 0;
+    size_t previous_width = 0;
 
     for (size_t j = 0; j < segments; ++j) {
       rois.push_back(
         Rect(
-          (j == 0) ? 0 : (previousX + previousWidth),
-          (i == 0) ? 0 : (previousY + previousHeight),
-          patchWidth  + ((wReminderTmp > 0) ? 1 : 0),
-          patchHeight + ((hReminderTmp > 0) ? 1 : 0)
+          (j == 0) ? 0 : (previous_x + previous_width),
+          (i == 0) ? 0 : (previous_y + previous_height),
+          patch_width  + ((w_reminder_tmp > 0) ? 1 : 0),
+          patch_height + ((h_reminder_tmp > 0) ? 1 : 0)
         )
       );
 
-      previousX = rois.back().x;
-      previousWidth = rois.back().width;
+      previous_x = rois.back().x;
+      previous_width = rois.back().width;
 
-      if (wReminderTmp > 0)
-        --wReminderTmp;
+      if (w_reminder_tmp > 0)
+        --w_reminder_tmp;
     }
 
-    previousY = rois.back().y;
-    previousHeight = rois.back().height;
+    previous_y = rois.back().y;
+    previous_height = rois.back().height;
 
-    if (hReminderTmp > 0)
-      --hReminderTmp;
+    if (h_reminder_tmp > 0)
+      --h_reminder_tmp;
   }
 
   return rois;

@@ -32,33 +32,33 @@ using namespace labgen_p;
  * FrameDifferenceC1L1                                                        *
  * ========================================================================== */
 
-void FrameDifferenceC1L1::compute(const Mat& image, Mat& motion_map) {
-  if(image.empty())
+void FrameDifferenceC1L1::compute(const Mat& current_frame, Mat& motion_map) {
+  if(current_frame.empty())
     return;
 
-  Mat cinput;
+  Mat converted_input;
 
-  if (image.channels() != 1)
-    cvtColor(image, cinput, CV_BGR2GRAY);
+  if (current_frame.channels() != 1)
+    cvtColor(current_frame, converted_input, CV_BGR2GRAY);
   else
-    cinput = image;
+    converted_input = current_frame;
 
-  if (previous_image.empty()) {
-    cinput.copyTo(previous_image);
+  if (previous_frame.empty()) {
+    converted_input.copyTo(previous_frame);
     return;
   }
 
-  const unsigned char* image_buffer      = cinput.data;
-  const unsigned char* previous_buffer   = previous_image.data;
+  const unsigned char* current_buffer  = converted_input.data;
+  const unsigned char* previous_buffer = previous_frame.data;
 
   int32_t* motion_map_buffer =
     reinterpret_cast<int32_t*>(motion_map.data);
 
-  for (int i = 0; i < image.total(); ++i) {
+  for (int i = 0; i < current_frame.total(); ++i) {
     *(motion_map_buffer++) = abs(
-      static_cast<int32_t>(*(image_buffer++)) - *(previous_buffer++)
+      static_cast<int32_t>(*(current_buffer++)) - *(previous_buffer++)
     );
   }
 
-  cinput.copyTo(previous_image);
+  converted_input.copyTo(previous_frame);
 }
