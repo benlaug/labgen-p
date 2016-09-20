@@ -52,7 +52,15 @@ namespace labgen_p {
 
       void insert(const cv::Mat& current_frame);
 
-      void get_background(cv::Mat& background) const;
+      void generate_background(cv::Mat& background) const;
+
+      size_t get_height() const;
+
+      size_t get_width() const;
+
+      int32_t get_s() const;
+
+      int32_t get_n() const;
 
       const cv::Mat& get_motion_map() const;
 

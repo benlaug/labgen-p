@@ -235,7 +235,7 @@ int main(int argc, char** argv) {
       imshow("Input video", *it);
       imshow("Quantities of motion", labgen_p.get_quantities_of_motion());
 
-      labgen_p.get_background(background);
+      labgen_p.generate_background(background);
       imshow("Estimated background", background);
 
       cvWaitKey(1);
@@ -247,7 +247,7 @@ int main(int argc, char** argv) {
   output_file << output << "/output_" << s_param << "_" << n_param << ".png";
 
   /* Compute background and write it. */
-  labgen_p.get_background(background);
+  labgen_p.generate_background(background);
 
   cout << "Writing " << output_file.str() << "..." << endl;
   imwrite(output_file.str(), background);

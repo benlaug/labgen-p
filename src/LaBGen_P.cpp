@@ -65,7 +65,7 @@ void LaBGen_P::insert(const cv::Mat& current_frame) {
 
 /******************************************************************************/
 
-void LaBGen_P::get_background(cv::Mat& background) const {
+void LaBGen_P::generate_background(cv::Mat& background) const {
   if (history.empty()) {
     throw runtime_error(
       "Cannot generate the background with less than two inserted frames"
@@ -73,6 +73,30 @@ void LaBGen_P::get_background(cv::Mat& background) const {
   }
 
   history.median(background, s);
+}
+
+/******************************************************************************/
+
+size_t LaBGen_P::get_height() const {
+  return height;
+}
+
+/******************************************************************************/
+
+size_t LaBGen_P::get_width() const {
+  return width;
+}
+
+/******************************************************************************/
+
+int32_t LaBGen_P::get_s() const {
+  return s;
+}
+
+/******************************************************************************/
+
+int32_t LaBGen_P::get_n() const {
+  return n;
 }
 
 /******************************************************************************/
