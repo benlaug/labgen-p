@@ -17,12 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with LaBGen-P.  If not, see <http://www.gnu.org/licenses/>.
 add_executable(
-  LaBGen-P
-  LaBGen-P.cpp
+  apply_labgen_p
+  apply_labgen_p.cpp
 )
 
 target_link_libraries(
-  LaBGen-P
+  apply_labgen_p
   LaBGen-P_static
   ${Boost_LIBRARIES}
   ${OpenCV_LIBS}
