@@ -24,26 +24,28 @@
 
 #include "SummedAreaTables.hpp"
 
-namespace labgen_p {
-  /* ======================================================================== *
-   * QuantitiesMotion                                                         *
-   * ======================================================================== */
+namespace ns_labgen_p {
+  namespace ns_internals {
+    /* ====================================================================== *
+     * QuantitiesMotion                                                       *
+     * ====================================================================== */
 
-  class QuantitiesMotion {
-    protected:
+    class QuantitiesMotion {
+      protected:
 
-      typedef int32_t                                 QuantitiesMotionEncoding;
+        typedef int32_t                               QuantitiesMotionEncoding;
 
-    protected:
+      protected:
 
-      int size;
+        int size;
 
-    public:
+      public:
 
-      QuantitiesMotion(int size);
+        QuantitiesMotion(int size);
 
-      void compute(cv::Mat& motion_map, cv::Mat& quantities_of_motion) const;
+        void compute(cv::Mat& motion_map, cv::Mat& quantities_of_motion) const;
 
-      int getOpenCVEncoding() const;
-  };
-} /* _NS_labgen_p_ */
+        int getOpenCVEncoding() const;
+    };
+  } /* ns_internals */
+} /* ns_labgen_p */

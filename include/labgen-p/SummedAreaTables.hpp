@@ -24,35 +24,37 @@
 
 #include <opencv2/core/core.hpp>
 
-namespace labgen_p {
-  /* ======================================================================== *
-   * SummedAreaTables                                                         *
-   * ======================================================================== */
+namespace ns_labgen_p {
+  namespace ns_internals {
+    /* ====================================================================== *
+     * SummedAreaTables                                                       *
+     * ====================================================================== */
 
-  /**
-   * This class implements the method known as "Integral Image Representation"
-   * or "Summed area tables" introduced by F. Crown at SIGGRAPH 1984.
-   */
-  template <typename T>
-  class SummedAreaTables {
-    private :
+    /**
+     * This class implements the method known as "Integral Image Representation"
+     * or "Summed area tables" introduced by F. Crown at SIGGRAPH 1984.
+     */
+    template <typename T>
+    class SummedAreaTables {
+      private :
 
-      int w;
-      int h;
-      T* sum;
+        int w;
+        int h;
+        T* sum;
 
-    public :
+      public :
 
-      SummedAreaTables(const cv::Mat& mat);
+        SummedAreaTables(const cv::Mat& mat);
 
-      virtual ~SummedAreaTables();
+        virtual ~SummedAreaTables();
 
-      T getIntegral(int row, int col) const;
+        T getIntegral(int row, int col) const;
 
-      T getIntegral(int min_row, int max_row, int min_col, int max_col) const;
-  };
+        T getIntegral(int min_row, int max_row, int min_col, int max_col) const;
+    };
 
-  #define _LABGEN_P_SUMMED_AREA_TABLES_TPP_
-  #include "SummedAreaTables.tpp"
-  #undef  _LABGEN_P_SUMMED_AREA_TABLES_TPP_
-} /* _NS_labgen_p_ */
+#define _NS_LABGEN_P_NS_INTERNALS_SUMMED_AREA_TABLES_TPP_
+#include "SummedAreaTables.tpp"
+#undef  _NS_LABGEN_P_NS_INTERNALS_SUMMED_AREA_TABLES_TPP_
+  } /* ns_internals */
+} /* ns_labgen_p */

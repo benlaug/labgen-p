@@ -37,7 +37,7 @@ using namespace cv;
 using namespace std;
 using namespace boost;
 using namespace boost::program_options;
-using namespace labgen_p;
+using namespace ns_labgen_p;
 
 /******************************************************************************
  * Main program                                                               *
@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
     "LaBGen-P - Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2016\n"
     "http://www.montefiore.ulg.ac.be/~blaugraud\n"
     "http://www.telecom.ulg.ac.be/labgen\n\n"
-    "Usage: ./apply_labgen_p [options]"
+    "Usage: ./LaBGen-P-cli [options]"
   );
 
   opt_desc.add_options()

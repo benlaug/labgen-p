@@ -26,100 +26,100 @@
 
 #include "Utils.hpp"
 
-#define CHANNELS                                                              3
+namespace ns_labgen_p {
+  namespace ns_internals {
+    /* ====================================================================== *
+     * HistoryMat                                                             *
+     * ====================================================================== */
 
-namespace labgen_p {
-  /* ======================================================================== *
-   * HistoryMat                                                               *
-   * ======================================================================== */
+    class HistoryMat {
+        friend bool operator< (const HistoryMat& lhs, const HistoryMat& rhs);
+        friend bool operator<=(const HistoryMat& lhs, const HistoryMat& rhs);
+        friend bool operator==(const HistoryMat& lhs, const HistoryMat& rhs);
+        friend bool operator< (const HistoryMat& lhs, const uint32_t&   rhs);
+        friend bool operator<=(const HistoryMat& lhs, const uint32_t&   rhs);
+        friend bool operator==(const HistoryMat& lhs, const uint32_t&   rhs);
+        friend bool operator< (const uint32_t&   lhs, const HistoryMat& rhs);
+        friend bool operator<=(const uint32_t&   lhs, const HistoryMat& rhs);
+        friend bool operator==(const uint32_t&   lhs, const HistoryMat& rhs);
 
-  class HistoryMat {
-      friend bool operator< (const HistoryMat& lhs, const HistoryMat& rhs);
-      friend bool operator<=(const HistoryMat& lhs, const HistoryMat& rhs);
-      friend bool operator==(const HistoryMat& lhs, const HistoryMat& rhs);
-      friend bool operator< (const HistoryMat& lhs, const uint32_t&   rhs);
-      friend bool operator<=(const HistoryMat& lhs, const uint32_t&   rhs);
-      friend bool operator==(const HistoryMat& lhs, const uint32_t&   rhs);
-      friend bool operator< (const uint32_t&   lhs, const HistoryMat& rhs);
-      friend bool operator<=(const uint32_t&   lhs, const HistoryMat& rhs);
-      friend bool operator==(const uint32_t&   lhs, const HistoryMat& rhs);
+      protected:
 
-    protected:
+        uint8_t mat[3];
+        uint32_t positives;
 
-      uint8_t mat[3];
-      uint32_t positives;
+      public:
 
-    public:
+        HistoryMat(const unsigned char* mat, const uint32_t positives);
 
-      HistoryMat(const unsigned char* mat, const uint32_t positives);
+        HistoryMat(const HistoryMat& copy);
 
-      HistoryMat(const HistoryMat& copy);
+        HistoryMat& operator=(const HistoryMat& copy);
 
-      HistoryMat& operator=(const HistoryMat& copy);
+        uint8_t operator[](size_t i) const;
+    };
 
-      uint8_t operator[](size_t i) const;
-  };
+    /* ====================================================================== *
+     * History                                                                *
+     * ====================================================================== */
 
-  /* ======================================================================== *
-   * History                                                                  *
-   * ======================================================================== */
+    class History {
+      public:
 
-  class History {
-    public:
+        typedef std::vector<HistoryMat>                             HistoryVec;
 
-      typedef std::vector<HistoryMat>                               HistoryVec;
+      protected:
 
-    protected:
+        HistoryVec history;
+        size_t buffer_size;
 
-      HistoryVec history;
-      size_t buffer_size;
+      public:
 
-    public:
+        explicit History(size_t buffer_size);
 
-      explicit History(size_t buffer_size);
+        HistoryVec& operator*();
 
-      HistoryVec& operator*();
+        const HistoryVec& operator*() const;
 
-      const HistoryVec& operator*() const;
+        void insert(
+          const int32_t* quantities_of_motion,
+          const unsigned char* current_frame
+        );
 
-      void insert(
-        const int32_t* quantities_of_motion,
-        const unsigned char* current_frame
-      );
+        void median(unsigned char* result, size_t size = ~0) const;
 
-      void median(unsigned char* result, size_t size = ~0) const;
+        bool empty() const;
+    };
 
-      bool empty() const;
-  };
+    /* ====================================================================== *
+     * PatchesHistory                                                         *
+     * ====================================================================== */
 
-  /* ======================================================================== *
-   * PatchesHistory                                                           *
-   * ======================================================================== */
+    class PatchesHistory {
+      protected:
 
-  class PatchesHistory {
-    protected:
+        typedef std::vector<History>                         PatchesHistoryVec;
 
-      typedef std::vector<History>                           PatchesHistoryVec;
+      protected:
 
-    protected:
+        PatchesHistoryVec p_history;
+        Utils::ROIs rois;
 
-      PatchesHistoryVec p_history;
-      Utils::ROIs rois;
+      public:
 
-    public:
+        PatchesHistory(const Utils::ROIs& rois, size_t buffer_size);
 
-      PatchesHistory(const Utils::ROIs& rois, size_t buffer_size);
+        void insert(
+          const cv::Mat& quantities_of_motion, const cv::Mat& current_frame
+        );
 
-      void insert(
-        const cv::Mat& quantities_of_motion, const cv::Mat& current_frame
-      );
+        void median(cv::Mat& result, size_t size = ~0) const;
 
-      void median(cv::Mat& result, size_t size = ~0) const;
+        bool empty() const;
+    };
 
-      bool empty() const;
-  };
-
-#define _LABGEN_P_HISTORY_IPP_
+#define _NS_LABGEN_P_NS_INTERNALS_HISTORY_IPP_
 #include "History.ipp"
-#undef  _LABGEN_P_HISTORY_IPP_
-} /* _NS_labgen_p_ */
+#undef  _NS_LABGEN_P_NS_INTERNALS_HISTORY_IPP_
+  } /* ns_internals */
+} /* ns_labgen_p */

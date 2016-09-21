@@ -24,22 +24,24 @@
 
 #include <opencv2/core/core.hpp>
 
-namespace labgen_p {
-  /* ======================================================================== *
-   * Utils                                                                    *
-   * ======================================================================== */
+namespace ns_labgen_p {
+  namespace ns_internals {
+    /* ====================================================================== *
+     * Utils                                                                  *
+     * ====================================================================== */
 
-  class Utils {
-    public:
+    class Utils {
+      public:
 
-      typedef std::vector<cv::Rect>                                           ROIs;
+        typedef std::vector<cv::Rect>                                     ROIs;
 
-    public:
+      public:
 
-      static std::string getMethod(std::string method);
+        static std::string getMethod(std::string method);
 
-      static ROIs getROIs(size_t height, size_t width, size_t segments);
+        static ROIs getROIs(size_t height, size_t width, size_t segments);
 
-      static ROIs getROIs(size_t height, size_t width);
-  };
-} /* _NS_labgen_p_ */
+        static ROIs getROIs(size_t height, size_t width);
+    };
+  } /* ns_internals */
+} /* ns_labgen_p */

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with LaBGen-P.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef    _LABGEN_P_HISTORY_IPP_
+#ifndef    _NS_LABGEN_P_NS_INTERNALS_HISTORY_IPP_
 #error "History.hpp must be included instead of History.ipp"
 #else
 /******************************************************************************
@@ -74,4 +74,4 @@ inline bool operator<=(const uint32_t& lhs, const HistoryMat& rhs) {
 inline bool operator==(const uint32_t& lhs, const HistoryMat& rhs) {
   return lhs == rhs.positives;
 }
-#endif /* _LABGEN_P_HISTORY_IPP_ */
+#endif /* _NS_LABGEN_P_NS_INTERNALS_HISTORY_IPP_ */

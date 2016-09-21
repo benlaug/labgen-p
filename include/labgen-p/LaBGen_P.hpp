@@ -27,7 +27,7 @@
 #include "History.hpp"
 #include "QuantitiesMotion.hpp"
 
-namespace labgen_p {
+namespace ns_labgen_p {
   /* ======================================================================== *
    * LaBGen_P                                                                 *
    * ======================================================================== */
@@ -39,11 +39,11 @@ namespace labgen_p {
       size_t width;
       int32_t s;
       int32_t n;
-      FrameDifferenceC1L1 f_diff;
+      ns_internals::FrameDifferenceC1L1 f_diff;
       cv::Mat motion_map;
       cv::Mat quantities_of_motion;
-      QuantitiesMotion filter;
-      PatchesHistory history;
+      ns_internals::QuantitiesMotion filter;
+      ns_internals::PatchesHistory history;
       bool first_frame;
 
     public:
@@ -66,4 +66,4 @@ namespace labgen_p {
 
       const cv::Mat& get_quantities_of_motion() const;
   };
-} /* _NS_labgen_p_ */
+} /* ns_labgen_p */

@@ -20,22 +20,24 @@
 
 #include <opencv2/core/core.hpp>
 
-namespace labgen_p {
-  /* ======================================================================== *
-   * FrameDifferenceC1L1                                                      *
-   * ======================================================================== */
+namespace ns_labgen_p {
+  namespace ns_internals {
+    /* =====================================================================  *
+     * FrameDifferenceC1L1                                                    *
+     * ====================================================================== */
 
-  class FrameDifferenceC1L1 {
-    private:
+    class FrameDifferenceC1L1 {
+      private:
 
-      cv::Mat previous_frame;
+        cv::Mat previous_frame;
 
-    public:
+      public:
 
-      FrameDifferenceC1L1() {}
+        FrameDifferenceC1L1() {}
 
-      virtual ~FrameDifferenceC1L1() {}
+        virtual ~FrameDifferenceC1L1() {}
 
-      void compute(const cv::Mat& current_frame, cv::Mat& motion_map);
-  };
-} /* _NS_labgpen_p_ */
+        void compute(const cv::Mat& current_frame, cv::Mat& motion_map);
+    };
+  } /* ns_internals */
+} /* ns_labgpen_p */

@@ -20,7 +20,7 @@
 
 using namespace std;
 using namespace cv;
-using namespace labgen_p;
+using namespace ns_labgen_p::ns_internals;
 
 /* ========================================================================== *
  * Utils                                                                      *

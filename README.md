@@ -22,25 +22,25 @@ $ make
 Once the program has been compiled, the following command gives the complete list of the options:
 
 ```
-$ ./LaBGen-P -h
+$ ./LaBGen-P-cli -h
 ```
 
 In this program, the syntax used to provide the path of the input video sequence is the same one used by the OpenCV library. Thus, for instance, one can generate a stationary background image for the IBMtest2 sequence of the [SBI dataset](http://sbmi2015.na.icar.cnr.it/SBIdataset.html) [2] with *(S, N) = (5, 3)* as follows:
 
 ```
-$ ./LaBGen-P -i path_to_IBMtest2/IBMtest2_%6d.png -o my_output_path -s 5 -n 3
+$ ./LaBGen-P-cli -i path_to_IBMtest2/IBMtest2_%6d.png -o my_output_path -s 5 -n 3
 ```
 
 One can directly use the default set of parameters with the `-d` option:
 
 ```
-$ ./LaBGen-P -i path_to_IBMtest2/IBMtest2_%6d.png -o my_output_path -d
+$ ./LaBGen-P-cli -i path_to_IBMtest2/IBMtest2_%6d.png -o my_output_path -d
 ```
 
 Finally, one can observe the processing performed by LaBGen-P in graphical windows by adding the `-v` option:
 
 ```
-$ ./LaBGen-P -i path_to_IBMtest2/IBMtest2_%6d.png -o my_output_path -d -v
+$ ./LaBGen-P-cli -i path_to_IBMtest2/IBMtest2_%6d.png -o my_output_path -d -v
 ```
 
 With this last option, the processing will be slower has an estimation of the stationary background is generated after each frame in the corresponding window. Here is an example of the execution of the program with the `-v` option:
