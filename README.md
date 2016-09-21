@@ -7,7 +7,7 @@ LaBGen-P is a pixel-level stationary background generation method introduced in 
 1. To share the source code of the method.
 2. To embed the method in a ready-to-use program.
 
-## Instructions
+## Compiling the program
 
 The program has been developed in standard C++ and is distributed under the [GPLv3](LICENSE) license. In order to compile it, you need a C++ compiler, a copy of the [Boost](http://www.boost.org) library, a copy of the [OpenCV](http://opencv.org) library, and the [CMake](https://cmake.org) build automation tool. On UNIX-like environments, the program can be compiled as follows, considering that your terminal is in the source code directory:
 
@@ -48,6 +48,20 @@ With this last option, the processing will be slower has an estimation of the st
 ![Screenshot](readme/screenshot.png)
 
 Note that the program has been successfully tested on Debian-like GNU/Linux operating systems (compiled with `g++`) and macOS (compiled with `clang++`).
+
+## Citation
+
+If you use the LaBGen-P algorithm in your work, please cite the paper [1].
+
+```
+@inproceedings{Laugraud2016LaBGen-P,
+  title = {{LaBGen-P}: A Pixel-Level Stationary Background Generation Method Based on {LaBGen}},
+  author = {B. Laugraud and S. Pi{\'e}rard and M. {Van Droogenbroeck}},
+  booktitle = {IEEE International Conference on Pattern Recognition (ICPR), IEEE Scene Background Modeling Contest (SBMC)},
+  year = {2016},
+  address = {Cancun, Mexico}
+}
+```
 
 ## References
 
