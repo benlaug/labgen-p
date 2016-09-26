@@ -127,9 +127,9 @@ void History::median(unsigned char* result, size_t size) const {
     result[2] = history[0][2];
   }
 
-  vector<unsigned char> buffer_r(buffer_size);
-  vector<unsigned char> buffer_g(buffer_size);
-  vector<unsigned char> buffer_b(buffer_size);
+  static vector<unsigned char> buffer_r(buffer_size);
+  static vector<unsigned char> buffer_g(buffer_size);
+  static vector<unsigned char> buffer_b(buffer_size);
 
   size_t _size = min(history.size(), size);
 

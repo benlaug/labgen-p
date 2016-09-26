@@ -46,7 +46,7 @@ first_frame(true) {
 /******************************************************************************/
 
 void LaBGen_P::insert(const cv::Mat& current_frame) {
-  /* Background subtraction. */
+  /* Motion map computation by frame difference. */
   f_diff.compute(current_frame, motion_map);
 
   /* Initialization of background subtraction. */

@@ -35,7 +35,6 @@
 
 using namespace cv;
 using namespace std;
-using namespace boost;
 using namespace boost::program_options;
 using namespace ns_labgen_p;
 
@@ -109,7 +108,7 @@ int main(int argc, char** argv) {
   cout << "===========================================================" << endl;
   cout << "= Copyright - Benjamin Laugraud - 2016                    =" << endl;
   cout << "= http://www.montefiore.ulg.ac.be/~blaugraud              =" << endl;
-  cout << "= http://www.telecom.ulg.ac.be/research/sbg               =" << endl;
+  cout << "= http://www.telecom.ulg.ac.be/research/labgen            =" << endl;
   cout << "===========================================================" << endl;
   cout << endl;
 
@@ -186,8 +185,8 @@ int main(int argc, char** argv) {
 
   cout << "Reading sequence " << sequence << "..." << endl;
 
-  cout << "          height: " << height     << endl;
-  cout << "           width: " << width      << endl;
+  cout << "        height: " << height     << endl;
+  cout << "         width: " << width      << endl;
 
   typedef vector<Mat>                                                FramesVec;
   vector<Mat> frames;
@@ -246,7 +245,6 @@ int main(int argc, char** argv) {
   stringstream output_file;
   output_file << output << "/output_" << s_param << "_" << n_param << ".png";
 
-  /* Compute background and write it. */
   labgen_p.generate_background(background);
 
   cout << "Writing " << output_file.str() << "..." << endl;
