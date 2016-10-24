@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
   cout << "===========================================================" << endl;
   cout << "= Copyright - Benjamin Laugraud - 2016                    =" << endl;
   cout << "= http://www.montefiore.ulg.ac.be/~blaugraud              =" << endl;
-  cout << "= http://www.telecom.ulg.ac.be/research/labgen            =" << endl;
+  cout << "= http://www.telecom.ulg.ac.be/labgen                     =" << endl;
   cout << "===========================================================" << endl;
   cout << endl;
 

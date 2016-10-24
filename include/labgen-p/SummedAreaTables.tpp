@@ -24,18 +24,18 @@
  * SummedAreaTables                                                           *
  * ========================================================================== */
 
-template <typename T>
-SummedAreaTables<T>::SummedAreaTables(const cv::Mat& mat) :
+template <typename Input, typename Output>
+SummedAreaTables<Input, Output>::SummedAreaTables(const cv::Mat& mat) :
 w(mat.cols),
 h(mat.rows),
-sum(new T[mat.total()]) {
+sum(new Output[mat.total()]) {
   if (w == 0)
     throw std::logic_error("Image with zero width are not supported");
 
   if (h == 0)
     throw std::logic_error("Image with zero height are not supported");
 
-  const T* buffer = reinterpret_cast<const T*>(mat.data);
+  const Input* buffer = reinterpret_cast<const Input*>(mat.data);
 
   for (int row = 0; row < h; ++row) {
     for (int col = 0; col < w; ++col) {
@@ -50,35 +50,41 @@ sum(new T[mat.total()]) {
 
 /******************************************************************************/
 
-template <typename T>
-SummedAreaTables<T>::~SummedAreaTables() {
+template <typename Input, typename Output>
+SummedAreaTables<Input, Output>::~SummedAreaTables() {
   delete[] sum;
 }
 
 /******************************************************************************/
 
-template <typename T>
-inline T SummedAreaTables<T>::getIntegral(int row, int col) const {
+template <typename Input, typename Output>
+inline Output SummedAreaTables<Input, Output>::getIntegral(
+  int row,
+  int col
+) const {
   if (row < 0)
-    return T();
+    return Output();
 
   if (col < 0)
-    return T();
+    return Output();
 
   return sum[std::min(row, h - 1) * w + std::min(col, w - 1)];
 }
 
 /******************************************************************************/
 
-template <typename T>
-T SummedAreaTables<T>::getIntegral(
-  int min_row, int max_row, int min_col, int max_col
+template <typename Input, typename Output>
+Output SummedAreaTables<Input, Output>::getIntegral(
+  int min_row,
+  int max_row,
+  int min_col,
+  int max_col
 ) const {
   if (min_row > max_row)
-    return T();
+    return Output();
 
   if (min_col > max_col)
-    return T();
+    return Output();
 
   return
     getIntegral(max_row    , max_col    ) -

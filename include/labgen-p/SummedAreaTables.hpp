@@ -34,13 +34,13 @@ namespace ns_labgen_p {
      * This class implements the method known as "Integral Image Representation"
      * or "Summed area tables" introduced by F. Crown at SIGGRAPH 1984.
      */
-    template <typename T>
+    template <typename Input, typename Output = Input>
     class SummedAreaTables {
       private :
 
         int w;
         int h;
-        T* sum;
+        Output* sum;
 
       public :
 
@@ -48,9 +48,14 @@ namespace ns_labgen_p {
 
         virtual ~SummedAreaTables();
 
-        T getIntegral(int row, int col) const;
+        Output getIntegral(int row, int col) const;
 
-        T getIntegral(int min_row, int max_row, int min_col, int max_col) const;
+        Output getIntegral(
+          int min_row,
+          int max_row,
+          int min_col,
+          int max_col
+        ) const;
     };
 
 #define _NS_LABGEN_P_NS_INTERNALS_SUMMED_AREA_TABLES_TPP_
