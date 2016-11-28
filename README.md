@@ -2,7 +2,7 @@
 
 ![Screenshot](readme/graphical-abstract.png)
 
-LaBGen-P is a pixel-level stationary background generation method introduced in [1]. Note that LaBGen-P has been ranked second during the [IEEE Scene Background Modeling Contest (SBMC) 2016](http://pione.dinf.usherbrooke.ca/sbmc2016). The purpose of this repository is twofold:
+LaBGen-P is a pixel-level stationary background generation method introduced in [1], and based on [LaBGen](https://github.com/benlaug/labgen). Note that LaBGen-P has been ranked second during the [IEEE Scene Background Modeling Contest (SBMC) 2016](http://pione.dinf.usherbrooke.ca/sbmc2016). The purpose of this repository is twofold:
 
 1. To share the source code of the method.
 2. To embed the method in a ready-to-use program.
@@ -62,6 +62,10 @@ If you use the LaBGen-P algorithm in your work, please cite the paper [1].
   address = {Cancun, Mexico}
 }
 ```
+
+## Alternatives
+
+A patch-based variant of LaBGen-P, called LaBGen, is also [available on GitHub](https://github.com/benlaug/labgen).
 
 ## References
 
