@@ -2,7 +2,7 @@
 
 ![Screenshot](readme/graphical-abstract.png)
 
-LaBGen-P is a pixel-level stationary background generation method introduced in [1], and based on [LaBGen](https://github.com/benlaug/labgen). Note that LaBGen-P has been ranked second during the [IEEE Scene Background Modeling Contest (SBMC) 2016](http://pione.dinf.usherbrooke.ca/sbmc2016). The purpose of this repository is twofold:
+LaBGen-P is a pixel-level stationary background generation method introduced in [[1](#references)], and based on [LaBGen](https://github.com/benlaug/labgen). Note that LaBGen-P has been ranked second during the [IEEE Scene Background Modeling Contest (SBMC) 2016](http://pione.dinf.usherbrooke.ca/sbmc2016). The purpose of this repository is twofold:
 
 1. To share the source code of the method.
 2. To embed the method in a ready-to-use program.
@@ -25,7 +25,7 @@ Once the program has been compiled, the following command gives the complete lis
 $ ./LaBGen-P-cli -h
 ```
 
-In this program, the syntax used to provide the path of the input video sequence is the same one used by the OpenCV library. Thus, for instance, one can generate a stationary background image for the IBMtest2 sequence of the [SBI dataset](http://sbmi2015.na.icar.cnr.it/SBIdataset.html) [2] with *(S, N) = (5, 3)* as follows:
+In this program, the syntax used to provide the path of the input video sequence is the same one used by the OpenCV library. Thus, for instance, one can generate a stationary background image for the IBMtest2 sequence of the [SBI dataset](http://sbmi2015.na.icar.cnr.it/SBIdataset.html) [[2](#references)] with *(S, N) = (5, 3)* as follows:
 
 ```
 $ ./LaBGen-P-cli -i path_to_IBMtest2/IBMtest2_%6d.png -o my_output_path -s 5 -n 3
@@ -51,7 +51,7 @@ Note that the program has been successfully tested on Debian-like GNU/Linux oper
 
 ## Citation
 
-If you use the LaBGen-P algorithm in your work, please cite the paper [1].
+If you use LaBGen-P in your work, please cite the paper [[1](#references)].
 
 ```
 @inproceedings{Laugraud2016LaBGen-P,
