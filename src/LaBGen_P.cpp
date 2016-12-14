@@ -45,7 +45,7 @@ first_frame(true) {
 
 /******************************************************************************/
 
-void LaBGen_P::insert(const cv::Mat& current_frame) {
+void LaBGen_P::insert(const Mat& current_frame) {
   /* Motion map computation by frame difference. */
   f_diff.compute(current_frame, motion_map);
 
@@ -66,7 +66,7 @@ void LaBGen_P::insert(const cv::Mat& current_frame) {
 
 /******************************************************************************/
 
-void LaBGen_P::generate_background(cv::Mat& background) const {
+void LaBGen_P::generate_background(Mat& background) const {
   if (history.empty()) {
     throw runtime_error(
       "Cannot generate the background with less than two inserted frames"
