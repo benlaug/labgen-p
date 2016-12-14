@@ -51,7 +51,7 @@ Note that the program has been successfully tested on Debian-like GNU/Linux oper
 
 ## Citation
 
-If you use LaBGen-P in your work, please cite the paper [[1](#references)].
+If you use LaBGen-P in your work, please cite paper [[1](#references)] as below:
 
 ```
 @inproceedings{Laugraud2016LaBGen-P,
