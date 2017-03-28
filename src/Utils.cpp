@@ -1,7 +1,9 @@
 /**
- * Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2016
+ * Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2017
  * http://www.montefiore.ulg.ac.be/~blaugraud
  * http://www.telecom.ulg.ac.be/labgen
+ *
+ * This file is part of LaBGen-P.
  *
  * LaBGen-P is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +22,7 @@
 
 using namespace std;
 using namespace cv;
-using namespace ns_labgen_p::ns_internals;
+using namespace ns_labgen_p;
 
 /* ========================================================================== *
  * Utils                                                                      *
@@ -101,4 +103,18 @@ Utils::ROIs Utils::getROIs(size_t height, size_t width) {
   }
 
   return rois;
+}
+
+/****************************************************************************/
+
+void Utils::normalize_mat(Mat& input, double max) {
+  normalize_mat(input, input, max);
+}
+
+/****************************************************************************/
+
+void Utils::normalize_mat(const Mat& input, Mat& output, double max) {
+  double max_value;
+  minMaxLoc(input, 0, &max_value);
+  input.convertTo(output, output.empty() ? -1 : output.type(), max / max_value);
 }

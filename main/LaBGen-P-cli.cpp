@@ -1,7 +1,9 @@
 /**
- * Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2016
+ * Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2017
  * http://www.montefiore.ulg.ac.be/~blaugraud
  * http://www.telecom.ulg.ac.be/labgen
+ *
+ * This file is part of LaBGen-P.
  *
  * LaBGen-P is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +24,7 @@
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -32,6 +35,8 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include <labgen-p/LaBGen_P.hpp>
+#include <labgen-p/GridWindow.hpp>
+#include <labgen-p/Utils.hpp>
 
 using namespace cv;
 using namespace std;
@@ -48,7 +53,7 @@ int main(int argc, char** argv) {
    ****************************************************************************/
 
   options_description opt_desc(
-    "LaBGen-P - Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2016\n"
+    "LaBGen-P - Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2017\n"
     "http://www.montefiore.ulg.ac.be/~blaugraud\n"
     "http://www.telecom.ulg.ac.be/labgen\n\n"
     "Usage: ./LaBGen-P-cli [options]"
@@ -87,6 +92,16 @@ int main(int argc, char** argv) {
       "visualization,v",
       "enable visualization"
     )
+    (
+      "split-vis,l",
+      "split the visualization items in separated windows"
+    )
+    (
+      "wait,w",
+      value<int32_t>()->default_value(1),
+      "time to wait (in ms) between the processing of two frames with "
+      "visualization"
+    )
   ;
 
   variables_map vars_map;
@@ -106,7 +121,7 @@ int main(int argc, char** argv) {
   cout << "===========================================================" << endl;
   cout << "= LaBGen-P                                                =" << endl;
   cout << "===========================================================" << endl;
-  cout << "= Copyright - Benjamin Laugraud - 2016                    =" << endl;
+  cout << "= Copyright - Benjamin Laugraud - 2017                    =" << endl;
   cout << "= http://www.montefiore.ulg.ac.be/~blaugraud              =" << endl;
   cout << "= http://www.telecom.ulg.ac.be/labgen                     =" << endl;
   cout << "===========================================================" << endl;
@@ -163,12 +178,38 @@ int main(int argc, char** argv) {
   /* "visualization" */
   bool visualization = vars_map.count("visualization");
 
+  /* "split-vis" */
+  bool split_vis = vars_map.count("split-vis");
+
+  if (split_vis && !visualization) {
+    cerr << "/!\\ The split-vis option without visualization will be ignored!";
+    cerr << endl << endl;
+  }
+
+  /* "wait" */
+  int32_t wait = vars_map["wait"].as<int32_t>();
+
+  if ((wait != 1) && !visualization) {
+    cerr << "/!\\ The wait option without visualization will be ignored!";
+    cerr << endl << endl;
+  }
+
+  if ((wait < 0) && visualization) {
+    throw runtime_error(
+      "The wait parameter must be positive!"
+    );
+  }
+
   /* Display parameters to the user. */
   cout << "Input sequence: "      << sequence      << endl;
   cout << "   Output path: "      << output        << endl;
   cout << "             S: "      << s_param       << endl;
   cout << "             N: "      << n_param       << endl;
   cout << " Visualization: "      << visualization << endl;
+  if (visualization)
+  cout << "     Split vis: "      << split_vis     << endl;
+  if (visualization)
+  cout << "     Wait (ms): "      << wait          << endl;
   cout << endl;
 
   /****************************************************************************
@@ -216,6 +257,20 @@ int main(int argc, char** argv) {
   cout << endl << "Processing..." << endl;
   bool first_frame = true;
 
+
+
+  unique_ptr<Mat> motion_map_8u;
+  unique_ptr<Mat> normalized_qom;
+  unique_ptr<GridWindow> window;
+
+  if (visualization) {
+    motion_map_8u  = unique_ptr<Mat>(new Mat(height, width, CV_8UC1));
+    normalized_qom = unique_ptr<Mat>(new Mat(height, width, CV_8UC1));
+
+    if (!split_vis)
+      window = unique_ptr<GridWindow>(new GridWindow("LaBGen-P", height, width, 2, 2));
+  }
+
   for (auto it = frames.begin(), end = frames.end(); it != end; ++it) {
     labgen_p.insert(*it);
 
@@ -231,13 +286,24 @@ int main(int argc, char** argv) {
 
     /* Visualization. */
     if (visualization) {
-      imshow("Input video", *it);
-      imshow("Quantities of motion", labgen_p.get_quantities_of_motion());
-
       labgen_p.generate_background(background);
-      imshow("Estimated background", background);
+      labgen_p.get_motion_map().convertTo(*motion_map_8u, CV_8U);
+      Utils::normalize_mat(labgen_p.get_quantities_of_motion(), *normalized_qom, 255.);
 
-      waitKey(1);
+      if (split_vis) {
+        imshow("Input video", *it);
+        imshow("Motion map", *motion_map_8u);
+        imshow("Quantities of motion", *normalized_qom);
+        imshow("Estimated background", background);
+      }
+      else {
+        window->display(*it, 0);
+        window->display(*motion_map_8u, 1);
+        window->display(*normalized_qom, 2);
+        window->display(background, 3);
+      }
+
+      waitKey(wait);
     }
   }
 

@@ -1,7 +1,9 @@
 /**
- * Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2016
+ * Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2017
  * http://www.montefiore.ulg.ac.be/~blaugraud
  * http://www.telecom.ulg.ac.be/labgen
+ *
+ * This file is part of LaBGen-P.
  *
  * LaBGen-P is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +38,7 @@ height(height),
 width(width),
 s(s),
 n(n),
-motion_map(Mat(height, width, CV_32SC1)),
+motion_map(height, width, CV_32SC1),
 filter((min(height, width) / n) | 1),
 history(Utils::getROIs(height, width), s),
 first_frame(true) {

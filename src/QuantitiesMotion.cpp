@@ -1,7 +1,9 @@
 /**
- * Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2016
+ * Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2017
  * http://www.montefiore.ulg.ac.be/~blaugraud
  * http://www.telecom.ulg.ac.be/labgen
+ *
+ * This file is part of LaBGen-P.
  *
  * LaBGen-P is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +36,8 @@ QuantitiesMotion::QuantitiesMotion(int size) : size(size) {}
 /******************************************************************************/
 
 void QuantitiesMotion::compute(
-  Mat& motion_map, Mat& quantities_of_motion
+  Mat& motion_map,
+  Mat& quantities_of_motion
 ) const {
   int half = size / 2;
 

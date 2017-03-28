@@ -1,8 +1,10 @@
 /**
- * Copyright - Sébastien Piérard <sebastien.pierard@ulg.ac.be> - 2016
- * Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be>         - 2016
+ * Copyright - Sébastien Piérard <sebastien.pierard@ulg.ac.be> - 2017
+ * Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be>         - 2017
  * http://www.montefiore.ulg.ac.be/~blaugraud
  * http://www.telecom.ulg.ac.be/labgen
+ *
+ * This file is part of LaBGen-P.
  *
  * LaBGen-P is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with LaBGen-P.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef    _NS_LABGEN_P_NS_INTERNALS_SUMMED_AREA_TABLES_TPP_
+#ifndef _NS_LABGEN_P_NS_INTERNALS_SUMMED_AREA_TABLES_TPP_
 #error "SummedAreaTables.hpp must be included instead of SummedAreaTables.tpp"
 #else
 /* ========================================================================== *

@@ -21,35 +21,50 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
+#include <unordered_set>
 #include <string>
-#include <vector>
 
 #include <opencv2/core/core.hpp>
-#include <iostream>
+#include <opencv2/highgui/highgui.hpp>
+
+#include "Utils.hpp"
+
 namespace ns_labgen_p {
   /* ======================================================================== *
-   * Utils                                                                    *
+   * GridWindow                                                               *
    * ======================================================================== */
 
-  class Utils {
+  class GridWindow {
+    protected:
+
+      typedef Utils::ROIs                                                 ROIs;
+
+    protected:
+
+      ROIs rois;
+      std::string window_name;
+      int32_t height;
+      int32_t width;
+      int32_t rows;
+      int32_t cols;
+      cv::Mat buffer;
+      static std::unordered_set<std::string> available_windows;
+
     public:
 
-      typedef std::vector<cv::Rect>                                     ROIs;
-
-    public:
-
-      static std::string getMethod(std::string method);
-
-      static ROIs getROIs(size_t height, size_t width, size_t segments);
-
-      static ROIs getROIs(size_t height, size_t width);
-
-      static void normalize_mat(cv::Mat& input, double max = 1);
-
-      static void normalize_mat(
-        const cv::Mat& input,
-        cv::Mat& output,
-        double max = 1
+      GridWindow(
+        std::string window_name,
+        int32_t height,
+        int32_t width,
+        int32_t rows = 1,
+        int32_t cols = 1
       );
+
+      virtual ~GridWindow();
+
+      void display(const cv::Mat& mat, int32_t index = 0);
+
+      void display(const cv::Mat& mat, int32_t row, int32_t col);
   };
 } /* ns_labgen_p */
