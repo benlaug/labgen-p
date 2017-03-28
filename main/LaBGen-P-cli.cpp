@@ -267,8 +267,11 @@ int main(int argc, char** argv) {
     motion_map_8u  = unique_ptr<Mat>(new Mat(height, width, CV_8UC1));
     normalized_qom = unique_ptr<Mat>(new Mat(height, width, CV_8UC1));
 
-    if (!split_vis)
-      window = unique_ptr<GridWindow>(new GridWindow("LaBGen-P", height, width, 2, 2));
+    if (!split_vis) {
+      window = unique_ptr<GridWindow>(
+        new GridWindow("LaBGen-P", height, width, 2, 2)
+      );
+    }
   }
 
   for (auto it = frames.begin(), end = frames.end(); it != end; ++it) {
@@ -288,7 +291,12 @@ int main(int argc, char** argv) {
     if (visualization) {
       labgen_p.generate_background(background);
       labgen_p.get_motion_map().convertTo(*motion_map_8u, CV_8U);
-      Utils::normalize_mat(labgen_p.get_quantities_of_motion(), *normalized_qom, 255.);
+
+      Utils::normalize_mat(
+        labgen_p.get_quantities_of_motion(),
+        *normalized_qom,
+        255.
+      );
 
       if (split_vis) {
         imshow("Input video", *it);
