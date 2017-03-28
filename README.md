@@ -45,17 +45,17 @@ One can observe the processing performed by LaBGen-P in a graphical window by ad
 $ ./LaBGen-P-cli -i path_to_IBMtest2/IBMtest2_%6d.png -o my_output_path -d -v
 ```
 
-With this last option, the processing will be slower as an estimation of the stationary background is generated after each frame in the graphical window. Here is an example of the execution of the program with the `-v` option:
+With this last option, the processing will be slower as an estimation of the stationary background is generated after each frame in the graphical window. Note that, to improve the visualization, the quantities of motion are normalized according to the maximum quantity computed for the current frame. Here is an example of the program executed with the `-v` option:
 
 ![Screenshot](readme/screenshot.png)
 
-By default, all the items to visualize are gathered in a unique window. If, for any reason, a graphical window per item is required, one can add the `-l` option along with `-v`:
+By default, all the items to observe are gathered in a unique window. If, for any reason, a graphical window per item is required, one can add the `-l` option along with `-v`:
 
 ![Screenshot](readme/screenshot-split.png)
 
 Finally, one can use the `-w` option to define (in ms) the time to wait between the processing of two frames when the visualization is enabled. This time is given to the `waitKey()` function of OpenCV. Consequently, the option `-w 0` means that you have to press any key to process the next frame. By default, the time is defined to 1 ms. 
 
-Note that the program has been successfully tested on Debian-like GNU/Linux operating systems (compiled with `g++`) and macOS (compiled with `clang++`).
+The program has been successfully tested on Debian-like GNU/Linux operating systems (compiled with `g++`) and macOS (compiled with `clang++`).
 
 ## Citation
 
