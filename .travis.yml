@@ -1,0 +1,112 @@
+language: cpp
+
+cache:
+  directories: $HOME/opencv-3.2.0
+
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      compiler: g++
+      env: OPENCV_VERSION=2
+
+    - os: linux
+      dist: trusty
+      compiler: g++
+      env: OPENCV_VERSION=3
+
+    - os: osx
+      compiler: clang++
+      env: OPENCV_VERSION=2
+
+    - os: osx
+      compiler: clang++
+      env: OPENCV_VERSION=3
+
+before_install:
+  - if   [[ "$TRAVIS_OS_NAME" == "linux" ]];
+    then
+      sudo apt-get update -qq;
+    elif [[ "$TRAVIS_OS_NAME" ==   "osx" ]];
+    then
+      /usr/bin/yes | pip uninstall numpy;
+      brew update;
+      brew tap homebrew/science;
+    fi
+
+install:
+  - if   [[ "$TRAVIS_OS_NAME" == "linux" ]];
+    then
+      sudo apt-get install -qq libboost-program-options-dev;
+
+      if   [[ "$OPENCV_VERSION" == "2" ]];
+      then
+        sudo apt-get install -qq libopencv-dev;
+      elif [[ "$OPENCV_VERSION" == "3" ]];
+      then
+        sudo apt-get install -qq libavcodec54
+                                 libavcodec-dev
+                                 libavformat54
+                                 libavformat-dev
+                                 libavresample1
+                                 libavresample-dev
+                                 libavutil52
+                                 libavutil-dev
+                                 libswscale2
+                                 libswscale-dev
+                                 libtbb2
+                                 libtbb-dev
+                                 libjpeg-dev
+                                 libpng-dev
+                                 libtiff-dev
+                                 libjasper-dev
+                                 libeigen3-dev;
+      fi;
+    elif [[ "$TRAVIS_OS_NAME" ==   "osx" ]];
+    then
+      if   [[ "$OPENCV_VERSION" == "2" ]];
+      then
+        brew install opencv;
+      elif [[ "$OPENCV_VERSION" == "3" ]];
+      then
+        brew install opencv3;
+        brew ln opencv3 --force;
+      fi;
+    fi
+
+before_script:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$OPENCV_VERSION" == "3" ]];
+    then
+      cd "$HOME";
+      if [[ -n "$(ls -A opencv-3.2.0)" ]];
+      then
+        echo "OpenCV 3.2 has been fetched from the cache";
+        cd opencv-3.2.0/build;
+      else
+        echo "Compiling and installing OpenCV 3.2";
+        wget https://github.com/opencv/opencv/archive/3.2.0.tar.gz;
+        tar zxf 3.2.0.tar.gz;
+        cd opencv-3.2.0;
+        mkdir build;
+        cd build;
+        cmake -DCMAKE_BUILD_TYPE=Release
+              -DCMAKE_INSTALL_PREFIX=/usr/local
+              -DWITH_OPENCL=OFF
+              -DWITH_CUDA=OFF
+              -DWITH_VTK=OFF
+              -DWITH_MATLAB=OFF
+              -DBUILD_opencv_java=OFF
+              -DBUILD_opencv_python2=OFF
+              -DBUILD_opencv_python3=OFF
+              -DBUILD_TESTS=OFF
+              -DBUILD_PERF_TESTS=OFF ..;
+        make -j4;
+      fi;
+      sudo make -j4 install;
+      cd "$TRAVIS_BUILD_DIR";
+    fi
+
+script:
+  - cd build
+  - cmake -DCMAKE_BUILD_TYPE=Release ..
+  - make -j4
