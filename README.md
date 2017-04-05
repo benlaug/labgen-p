@@ -1,8 +1,10 @@
 # LaBGen-P
 
-![Screenshot](readme/graphical-abstract.png)
+[![Build Status](https://travis-ci.org/benlaug/labgen-p.svg?branch=master)](https://travis-ci.org/benlaug/labgen-p)
 
 LaBGen-P is a pixel-level stationary background generation method introduced in [[1](#references)], and based on [LaBGen](https://github.com/benlaug/labgen). Our method has been ranked second during the [IEEE Scene Background Modeling Contest (SBMC) 2016](http://pione.dinf.usherbrooke.ca/sbmc2016). The current ranking and the quantitative metrics computed on the [SBMnet dataset](http://www.scenebackgroundmodeling.net) are available [here](http://pione.dinf.usherbrooke.ca/results).
+
+![Graphical Abstract](.readme/graphical-abstract.png)
 
 The purpose of this repository is twofold:
 
@@ -47,11 +49,11 @@ $ ./LaBGen-P-cli -i path_to_IBMtest2/IBMtest2_%6d.png -o my_output_path -d -v
 
 With this last option, the processing will be slower as an estimation of the stationary background is generated after each frame in the graphical window. Note that, to improve the visualization, the quantities of motion are normalized according to the maximum quantity computed for the current frame. Here is an example of the program executed with the `-v` option:
 
-![Screenshot](readme/screenshot.png)
+![Screenshot](.readme/screenshot.png)
 
 By default, all the items to observe are gathered in a unique window. If, for any reason, a graphical window per item is required, one can add the `-l` option along with `-v`:
 
-![Screenshot](readme/screenshot-split.png)
+![Screenshot Split](.readme/screenshot-split.png)
 
 Finally, one can use the `-w` option to define (in ms) the time to wait between the processing of two frames when the visualization is enabled. This time is given to the `waitKey()` function of OpenCV. Consequently, the option `-w 0` means that you have to press any key to process the next frame. By default, the time is defined to 1 ms. 
 
@@ -74,6 +76,15 @@ If you use LaBGen-P in your work, please cite paper [[1](#references)] as below:
 ## Alternatives
 
 A patch-based variant of LaBGen-P, called LaBGen, is also [available on GitHub](https://github.com/benlaug/labgen).
+
+## Testing
+
+Each commited revision is automatically tested using [Travis CI](https://travis-ci.org) on:
+
+* Ubuntu 14.04 with the `g++` compiler and OpenCV 2.3 installed from the Ubuntu repositories.
+* Ubuntu 14.04 with the `g++` compiler and OpenCV 3.2 compiled from the sources.
+* OS X El Capitan with the `clang++` compiler and OpenCV 2.4 installed with [Homebrew](https://brew.sh).
+* OS X El Capitan with the `clang++` compiler and OpenCV 3.2 installed with [Homebrew](https://brew.sh).
 
 ## References
 
