@@ -55,9 +55,7 @@ By default, all the items to observe are gathered in a unique window. If, for an
 
 ![Screenshot Split](.readme/screenshot-split.png)
 
-Finally, one can use the `-w` option to define (in ms) the time to wait between the processing of two frames when the visualization is enabled. This time is given to the `waitKey()` function of OpenCV. Consequently, the option `-w 0` means that you have to press any key to process the next frame. By default, the time is defined to 1 ms. 
-
-The program has been successfully tested on Debian-like GNU/Linux operating systems (compiled with `g++`) and macOS (compiled with `clang++`).
+Finally, one can use the `-w` option to define (in ms) the time to wait between the processing of two frames when the visualization is enabled. This time is given to the `waitKey()` function of OpenCV. Consequently, the option `-w 0` means that you have to press any key to process the next frame. By default, the time is defined to 1 ms.
 
 ## Citation
 
