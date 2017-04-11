@@ -257,8 +257,6 @@ int main(int argc, char** argv) {
   cout << endl << "Processing..." << endl;
   bool first_frame = true;
 
-
-
   unique_ptr<Mat> motion_map_8u;
   unique_ptr<Mat> normalized_qom;
   unique_ptr<GridWindow> window;
