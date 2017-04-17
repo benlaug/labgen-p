@@ -1,6 +1,6 @@
 # LaBGen-P
 
-[![Build Status](https://travis-ci.org/benlaug/labgen-p.svg?branch=master)](https://travis-ci.org/benlaug/labgen-p)
+[![OpenCV Version](https://img.shields.io/badge/opencv-2.x%2C%203.x-blue.svg)](http://opencv.org) [![Build Status](https://travis-ci.org/benlaug/labgen-p.svg?branch=master)](https://travis-ci.org/benlaug/labgen-p)
 
 LaBGen-P is a pixel-level stationary background generation method introduced in [[1](#references)], and based on [LaBGen](https://github.com/benlaug/labgen). Our method has been ranked second during the [IEEE Scene Background Modeling Contest (SBMC) 2016](http://pione.dinf.usherbrooke.ca/sbmc2016). The current ranking and the quantitative metrics computed on the [SBMnet dataset](http://www.scenebackgroundmodeling.net) are available [here](http://pione.dinf.usherbrooke.ca/results).
 
@@ -73,11 +73,12 @@ If you use LaBGen-P in your work, please cite paper [[1](#references)] as below:
 
 ## Alternatives
 
-A patch-based variant of LaBGen-P, called LaBGen, is also [available on GitHub](https://github.com/benlaug/labgen).
+* The original patch-based version of LaBGen is [available on GitHub](https://github.com/benlaug/labgen).
+* A variant of LaBGen, called LaBGen-OF, and leverages optical flow algorithms for motion detection, is also [available on GitHub](https://github.com/benlaug/labgen-of).
 
 ## Testing
 
-Each commited revision is automatically tested using [Travis CI](https://travis-ci.org) on:
+Each commited revision is automatically tested using [Travis CI](https://travis-ci.org/benlaug/labgen-p) on:
 
 * Ubuntu 14.04 with the `g++` compiler and OpenCV 2.3 installed from the Ubuntu repositories.
 * Ubuntu 14.04 with the `g++` compiler and OpenCV 3.2 compiled from the sources.
