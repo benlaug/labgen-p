@@ -68,8 +68,11 @@ If you use LaBGen-P in your work, please cite paper [[1](#references)] as below:
   title = {{LaBGen-P}: A Pixel-Level Stationary Background Generation Method Based on {LaBGen}},
   author = {B. Laugraud and S. Pi{\'e}rard and M. {Van Droogenbroeck}},
   booktitle = {IEEE International Conference on Pattern Recognition (ICPR), IEEE Scene Background Modeling Contest (SBMC)},
+  pages = {107-113},
   year = {2016},
-  address = {Cancun, Mexico}
+  month = {December},
+  address = {Canc{\'u}n, Mexico},
+  doi = {10.1109/ICPR.2016.7899617}
 }
 ```
 
