@@ -2,8 +2,6 @@
 
 [![OpenCV Version](https://img.shields.io/badge/opencv-2.x%2C%203.x-blue.svg)](http://opencv.org) [![Build Status](https://travis-ci.org/benlaug/labgen-p.svg?branch=master)](https://travis-ci.org/benlaug/labgen-p)
 
-> **NEW:** Background learning for detection and tracking from RGBD videos (RGBD2017). Workshop in conjunction with ICIAP 2017, Catania (Italy), September 11th or 12th, 2017. [http://rgbd2017.na.icar.cnr.it](http://rgbd2017.na.icar.cnr.it)
-
 LaBGen-P is a pixel-level stationary background generation method introduced in [[1](#references)], and based on [LaBGen](https://github.com/benlaug/labgen). Our method has been ranked second during the [IEEE Scene Background Modeling Contest (SBMC) 2016](http://pione.dinf.usherbrooke.ca/sbmc2016). The current ranking and the quantitative metrics computed on the [SBMnet dataset](http://www.scenebackgroundmodeling.net) are available [here](http://pione.dinf.usherbrooke.ca/results).
 
 ![Graphical Abstract](.readme/graphical-abstract.png)
@@ -92,6 +90,6 @@ Each commited revision is automatically tested using [Travis CI](https://travis-
 
 ## References
 
-[1] B. Laugraud, S. Piérard, M. Van Droogenbroeck. LaBGen-P: A Pixel-Level Stationary Background Generation Method Based on LaBGen. *International Conference on Pattern Recognition (ICPR), IEEE Scene Background Modeling Contest (SBMC)*, 2016.
+[1] B. Laugraud, S. Piérard, M. Van Droogenbroeck. LaBGen-P: A Pixel-Level Stationary Background Generation Method Based on LaBGen. *International Conference on Pattern Recognition (ICPR), IEEE Scene Background Modeling Contest (SBMC)*, 107–113, 2016.
 
 [2] L. Maddalena, A. Petrosino. Towards Benchmarking Scene Background Initialization. *International Conference on Image Analysis and Processing Workshops (ICIAP Workshops)*, 9281:469-476, 2015.
