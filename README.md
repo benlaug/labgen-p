@@ -76,8 +76,8 @@ If you use LaBGen-P in your work, please cite paper [[1](#references)] as below:
 
 ## Alternatives
 
-* The original patch-based version of LaBGen is [available on GitHub](https://github.com/benlaug/labgen).
-* A variant of LaBGen, called LaBGen-OF, and leverages optical flow algorithms for motion detection, is also [available on GitHub](https://github.com/benlaug/labgen-of).
+* The original patch-based version of [LaBGen]((https://github.com/benlaug/labgen)).
+* A variant of LaBGen, called [LaBGen-OF](https://github.com/benlaug/labgen-of), and leverages optical flow algorithms for motion detection.
 
 ## Testing
 
@@ -90,6 +90,6 @@ Each commited revision is automatically tested using [Travis CI](https://travis-
 
 ## References
 
-[1] B. Laugraud, S. Piérard, M. Van Droogenbroeck. LaBGen-P: A Pixel-Level Stationary Background Generation Method Based on LaBGen. *International Conference on Pattern Recognition (ICPR), IEEE Scene Background Modeling Contest (SBMC)*, 107–113, 2016.
+[1] [B. Laugraud, S. Piérard, M. Van Droogenbroeck. LaBGen-P: A Pixel-Level Stationary Background Generation Method Based on LaBGen. *International Conference on Pattern Recognition (ICPR), IEEE Scene Background Modeling Contest (SBMC)*, 107–113, 2016.](http://hdl.handle.net/2268/201146)
 
 [2] L. Maddalena, A. Petrosino. Towards Benchmarking Scene Background Initialization. *International Conference on Image Analysis and Processing Workshops (ICIAP Workshops)*, 9281:469-476, 2015.
