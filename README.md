@@ -76,7 +76,7 @@ If you use LaBGen-P in your work, please cite paper [[1](#references)] as below:
 
 ## Alternatives
 
-* The original patch-based version of [LaBGen]((https://github.com/benlaug/labgen)).
+* The original patch-based version of [LaBGen](https://github.com/benlaug/labgen).
 * A variant of LaBGen, called [LaBGen-OF](https://github.com/benlaug/labgen-of), and leverages optical flow algorithms for motion detection.
 
 ## Testing
