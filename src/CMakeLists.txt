@@ -39,6 +39,7 @@ set_target_properties(
 
 target_link_libraries(
   LaBGen-P_shared
+  ${Boost_LIBRARIES}
   ${OpenCV_LIBS}
 )
 
@@ -59,5 +60,6 @@ set_target_properties(
 
 target_link_libraries(
   LaBGen-P_static
+  ${Boost_LIBRARIES}
   ${OpenCV_LIBS}
 )

@@ -24,6 +24,5 @@ add_executable(
 target_link_libraries(
   LaBGen-P-cli
   LaBGen-P_static
-  ${Boost_LIBRARIES}
   ${OpenCV_LIBS}
 )

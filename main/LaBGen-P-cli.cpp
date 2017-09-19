@@ -18,29 +18,26 @@
  * You should have received a copy of the GNU General Public License
  * along with LaBGen-P.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <algorithm>
-#include <cstddef>
 #include <cstdint>
 #include <cstdlib>
-#include <iomanip>
 #include <iostream>
 #include <memory>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-
-#include <boost/program_options.hpp>
+#include <vector>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include <labgen-p/ArgumentsHandler.hpp>
 #include <labgen-p/LaBGen_P.hpp>
 #include <labgen-p/GridWindow.hpp>
+#include <labgen-p/TextProperties.hpp>
 #include <labgen-p/Utils.hpp>
 
 using namespace cv;
 using namespace std;
-using namespace boost::program_options;
 using namespace ns_labgen_p;
 
 /******************************************************************************
@@ -52,65 +49,14 @@ int main(int argc, char** argv) {
    * Argument(s) handling.                                                    *
    ****************************************************************************/
 
-  options_description opt_desc(
-    "LaBGen-P - Copyright - Benjamin Laugraud <blaugraud@ulg.ac.be> - 2017\n"
-    "http://www.montefiore.ulg.ac.be/~blaugraud\n"
-    "http://www.telecom.ulg.ac.be/labgen\n\n"
-    "Usage: ./LaBGen-P-cli [options]"
-  );
+  /*
+   * Extract parameters and sanity check.
+   */
 
-  opt_desc.add_options()
-    (
-      "help,h",
-      "print this help message"
-    )
-    (
-      "input,i",
-      value<string>(),
-      "path to the input sequence"
-    )
-    (
-      "output,o",
-      value<string>(),
-      "path to the output folder"
-    )
-    (
-      "s-parameter,s",
-      value<int32_t>()->multitoken(),
-      "value of the S parameter"
-    )
-    (
-      "n-parameter,n",
-      value<int32_t>(),
-      "value of the N parameter"
-    )
-    (
-      "default,d",
-      "use the default set of parameters"
-    )
-    (
-      "visualization,v",
-      "enable visualization"
-    )
-    (
-      "split-vis,l",
-      "split the visualization items in separated windows"
-    )
-    (
-      "wait,w",
-      value<int32_t>()->default_value(1),
-      "time to wait (in ms) between the processing of two frames with "
-      "visualization"
-    )
-  ;
+  ArgumentsHandler args_h(argc, argv);
 
-  variables_map vars_map;
-  store(parse_command_line(argc, argv, opt_desc), vars_map);
-  notify(vars_map);
-
-  /* Help message. */
-  if (vars_map.count("help")) {
-    cout << opt_desc << endl;
+  if (args_h.ask_for_help()) {
+    args_h.print_help();
     return EXIT_SUCCESS;
   }
 
@@ -127,107 +73,28 @@ int main(int argc, char** argv) {
   cout << "===========================================================" << endl;
   cout << endl;
 
-  /*
-   * Extract parameters and sanity check.
-   */
-
-  int32_t s_param = 0;
-  int32_t n_param = 0;
-
-  /* "input" */
-  if (!vars_map.count("input"))
-    throw runtime_error("You must provide the path of the input sequence!");
-
-  string sequence(vars_map["input"].as<string>());
-
-  /* "output" */
-  if (!vars_map.count("output"))
-    throw runtime_error("You must provide the path of the output folder!");
-
-  string output(vars_map["output"].as<string>());
-
-  /* "default" */
-  bool default_set = vars_map.count("default");
-
-  if (default_set) {
-    s_param = 19;
-    n_param = 3;
-  }
-
-  /* Other parameters. */
-  if (!default_set) {
-    /* "s-parameter" */
-    if (!vars_map.count("s-parameter"))
-      throw runtime_error("You must provide the S parameter!");
-
-    s_param = vars_map["s-parameter"].as<int32_t>();
-
-    if (s_param < 1)
-      throw runtime_error("The S parameter must be positive!");
-
-    /* "n-parameter" */
-    if (!vars_map.count("n-parameter"))
-      throw runtime_error("You must provide the N parameter!");
-
-    n_param = vars_map["n-parameter"].as<int32_t>();
-
-    if (n_param < 1)
-      throw runtime_error("The N parameter must be positive!");
-  }
-
-  /* "visualization" */
-  bool visualization = vars_map.count("visualization");
-
-  /* "split-vis" */
-  bool split_vis = vars_map.count("split-vis");
-
-  if (split_vis && !visualization) {
-    cerr << "/!\\ The split-vis option without visualization will be ignored!";
-    cerr << endl << endl;
-  }
-
-  /* "wait" */
-  int32_t wait = vars_map["wait"].as<int32_t>();
-
-  if ((wait != 1) && !visualization) {
-    cerr << "/!\\ The wait option without visualization will be ignored!";
-    cerr << endl << endl;
-  }
-
-  if ((wait < 0) && visualization) {
-    throw runtime_error(
-      "The wait parameter must be positive!"
-    );
-  }
-
-  /* Display parameters to the user. */
-  cout << "Input sequence: "      << sequence      << endl;
-  cout << "   Output path: "      << output        << endl;
-  cout << "             S: "      << s_param       << endl;
-  cout << "             N: "      << n_param       << endl;
-  cout << " Visualization: "      << visualization << endl;
-  if (visualization)
-  cout << "     Split vis: "      << split_vis     << endl;
-  if (visualization)
-  cout << "     Wait (ms): "      << wait          << endl;
-  cout << endl;
+  args_h.parse_vars_map();
+  args_h.print_parameters();
 
   /****************************************************************************
    * Reading sequence.                                                        *
    ****************************************************************************/
 
-  VideoCapture decoder(sequence);
+  VideoCapture decoder(args_h.get_input());
 
-  if (!decoder.isOpened())
-    throw runtime_error("Cannot open the '" + sequence + "' sequence.");
+  if (!decoder.isOpened()) {
+    throw runtime_error(
+      "Cannot open the '" + args_h.get_input() + "' sequence."
+    );
+  }
 
   int32_t height = decoder.get(CV_CAP_PROP_FRAME_HEIGHT);
   int32_t width  = decoder.get(CV_CAP_PROP_FRAME_WIDTH);
 
-  cout << "Reading sequence " << sequence << "..." << endl;
+  cout << "Reading sequence " << args_h.get_input() << "..." << endl;
 
-  cout << "        height: " << height     << endl;
-  cout << "         width: " << width      << endl;
+  cout << "           height: " << height     << endl;
+  cout << "            width: " << width      << endl;
 
   typedef vector<Mat>                                                FramesVec;
   vector<Mat> frames;
@@ -242,6 +109,61 @@ int main(int argc, char** argv) {
   cout << frames.size() << " frames read." << endl << endl;
 
   /****************************************************************************
+   * Initialization of graphical components and video streams.                *
+   ****************************************************************************/
+
+  unique_ptr<Mat> motion_map_8u;
+  unique_ptr<Mat> normalized_qom;
+
+  unique_ptr<GridWindow> window;
+  unique_ptr<VideoWriter> record_stream;
+
+  if (args_h.get_visualization() || args_h.get_record()) {
+    motion_map_8u  = unique_ptr<Mat>(new Mat(height, width, CV_8UC1));
+    normalized_qom = unique_ptr<Mat>(new Mat(height, width, CV_8UC1));
+
+    if (!args_h.get_split_vis()) {
+      TextProperties::TextPropertiesPtr title_properties = nullptr;
+
+      if (args_h.get_record()) {
+        title_properties = make_shared<TextProperties>(
+          TextProperties::Font::FONT_DUPLEX,
+          0.8
+        );
+      }
+      else
+        title_properties = make_shared<TextProperties>();
+
+      window = unique_ptr<GridWindow>(
+        new GridWindow(
+          "LaBGen-P",
+          (args_h.get_v_height() > 0) ? args_h.get_v_height() : height,
+          (args_h.get_v_width() > 0) ? args_h.get_v_width() : width,
+          2,
+          2,
+          title_properties
+        )
+      );
+
+      if (args_h.get_keep_ratio())
+        window->keep_ratio();
+
+      if (args_h.get_record()) {
+        const Mat& buffer = window->get_buffer();
+
+        record_stream = unique_ptr<VideoWriter>(
+          new VideoWriter(
+            args_h.get_record_path(),
+            CV_FOURCC('M','J','P','G'),
+            args_h.get_record_fps(),
+            Size(buffer.cols, buffer.rows)
+          )
+        );
+      }
+    }
+  }
+
+  /****************************************************************************
    * Processing.                                                              *
    ****************************************************************************/
 
@@ -251,26 +173,11 @@ int main(int argc, char** argv) {
   Mat background = Mat(height, width, CV_8UC3);
 
   /* Initialization of the LaBGen-P algorithm. */
-  LaBGen_P labgen_p(height, width, s_param, n_param);
+  LaBGen_P labgen_p(height, width, args_h.get_s_param(), args_h.get_n_param());
 
   /* Processing loop. */
   cout << endl << "Processing..." << endl;
   bool first_frame = true;
-
-  unique_ptr<Mat> motion_map_8u;
-  unique_ptr<Mat> normalized_qom;
-  unique_ptr<GridWindow> window;
-
-  if (visualization) {
-    motion_map_8u  = unique_ptr<Mat>(new Mat(height, width, CV_8UC1));
-    normalized_qom = unique_ptr<Mat>(new Mat(height, width, CV_8UC1));
-
-    if (!split_vis) {
-      window = unique_ptr<GridWindow>(
-        new GridWindow("LaBGen-P", height, width, 2, 2)
-      );
-    }
-  }
 
   for (auto it = frames.begin(), end = frames.end(); it != end; ++it) {
     labgen_p.insert(*it);
@@ -286,7 +193,7 @@ int main(int argc, char** argv) {
     }
 
     /* Visualization. */
-    if (visualization) {
+    if (args_h.get_visualization() || args_h.get_record()) {
       labgen_p.generate_background(background);
       labgen_p.get_motion_map().convertTo(*motion_map_8u, CV_8U);
 
@@ -296,26 +203,42 @@ int main(int argc, char** argv) {
         255.
       );
 
-      if (split_vis) {
+      if (args_h.get_split_vis()) {
         imshow("Input video", *it);
+        imshow("LaBGen-P", background);
         imshow("Motion map", *motion_map_8u);
         imshow("Quantities of motion", *normalized_qom);
-        imshow("Estimated background", background);
       }
       else {
         window->display(*it, 0);
-        window->display(*motion_map_8u, 1);
-        window->display(*normalized_qom, 2);
-        window->display(background, 3);
+        window->put_title("Input video", 0);
+
+        window->display(background, 1);
+        window->put_title("Background estimated by LaBGen-P", 1);
+
+        window->display(*motion_map_8u, 2);
+        window->put_title("Motion map", 2);
+
+        window->display(*normalized_qom, 3);
+        window->put_title("Quantities of motion", 3);
+
+        if (args_h.get_visualization())
+          window->refresh();
+
+        if (args_h.get_record())
+          *record_stream << window->get_buffer();
       }
 
-      waitKey(wait);
+      if (args_h.get_visualization())
+        waitKey(args_h.get_wait());
     }
   }
 
   /* Compute background and write it. */
   stringstream output_file;
-  output_file << output << "/output_" << s_param << "_" << n_param << ".png";
+  output_file << args_h.get_output() << "/output_"
+              << args_h.get_s_param() << "_"
+              << args_h.get_n_param() << ".png";
 
   labgen_p.generate_background(background);
 
@@ -323,10 +246,13 @@ int main(int argc, char** argv) {
   imwrite(output_file.str(), background);
 
   /* Cleaning. */
-  if (visualization) {
-    cout << endl << "Press any key to quit..." << endl;
-    waitKey(0);
+  if (args_h.get_visualization()) {
+    //cout << endl << "Press any key in a graphical window to quit..." << endl;
+    //waitKey(0);
     destroyAllWindows();
+
+    if (args_h.get_record())
+      record_stream->release();
   }
 
   /* Bye. */

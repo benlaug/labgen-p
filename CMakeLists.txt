@@ -45,6 +45,7 @@ endif ()
 
 find_package(OpenCV REQUIRED ${OpenCV_REQUIRED_LIST})
 include_directories(SYSTEM ${OpenCV_INCLUDE_DIR})
+add_definitions(-DOPENCV_VERSION=${OpenCV_VERSION_MAJOR})
 
 # Include directory.
 include_directories(include)
