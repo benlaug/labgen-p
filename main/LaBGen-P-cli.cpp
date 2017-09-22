@@ -247,8 +247,8 @@ int main(int argc, char** argv) {
 
   /* Cleaning. */
   if (args_h.get_visualization()) {
-    //cout << endl << "Press any key in a graphical window to quit..." << endl;
-    //waitKey(0);
+    cout << endl << "Press any key in a graphical window to quit..." << endl;
+    waitKey(0);
     destroyAllWindows();
 
     if (args_h.get_record())

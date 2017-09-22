@@ -11,6 +11,10 @@ The purpose of this repository is twofold:
 1. To share the source code of the method.
 2. To embed the method in a ready-to-use program.
 
+Here is a video showing some backgrounds estimated by LaBGen-P (click on the image below to play it):
+
+[![Demonstration of LaBGen-P](https://img.youtube.com/vi/lcXHM42EeZo/0.jpg)](https://www.youtube.com/watch?v=lcXHM42EeZo "Click to play")
+
 ## Compiling the program
 
 The program implementing the method has been developed in C++11 and is distributed under the [GPLv3](LICENSE) license. In order to compile it, you need a modern C++ compiler, a copy of the [Boost](http://www.boost.org) library, a copy of the [OpenCV](http://opencv.org) library, and the [CMake](https://cmake.org) build automation tool. On UNIX-like environments, the program can be compiled as follows, considering that your terminal is in the source code directory:
@@ -26,36 +30,18 @@ $ make
 Once the program has been compiled, the following command gives the complete list of available options:
 
 ```
-$ ./LaBGen-P-cli -h
+$ ./LaBGen-P-cli --help
 ```
 
-In this program, the syntax used to provide the path of the input video sequence is the same one used by the OpenCV library. Thus, for instance, one can generate a stationary background image for the IBMtest2 sequence of the [SBI dataset](http://sbmi2015.na.icar.cnr.it/SBIdataset.html) [[2](#references)] with *(S, N) = (5, 3)* as follows:
-
-```
-$ ./LaBGen-P-cli -i path_to_IBMtest2/IBMtest2_%6d.png -o my_output_path -s 5 -n 3
-```
-
-One can directly use the default set of parameters with the `-d` option:
-
-```
-$ ./LaBGen-P-cli -i path_to_IBMtest2/IBMtest2_%6d.png -o my_output_path -d
-```
-
-One can observe the processing performed by LaBGen-P in a graphical window by adding the `-v` option:
+As an example, the IBMtest2 sequence of the [SBI dataset](http://sbmi2015.na.icar.cnr.it/SBIdataset.html) [[4](#references)] can be processed with the default set of parameters as follows:
 
 ```
 $ ./LaBGen-P-cli -i path_to_IBMtest2/IBMtest2_%6d.png -o my_output_path -d -v
 ```
 
-With this last option, the processing will be slower as an estimation of the stationary background is generated after each frame in the graphical window. Note that, to improve the visualization, the quantities of motion are normalized according to the maximum quantity computed for the current frame. Here is an example of the program executed with the `-v` option:
-
 ![Screenshot](.readme/screenshot.png)
 
-By default, all the items to observe are gathered in a unique window. If, for any reason, a graphical window per item is required, one can add the `-l` option along with `-v`:
-
-![Screenshot Split](.readme/screenshot-split.png)
-
-Finally, one can use the `-w` option to define (in ms) the time to wait between the processing of two frames when the visualization is enabled. This time is given to the `waitKey()` function of OpenCV. Consequently, the option `-w 0` means that you have to press any key to process the next frame. By default, the time is defined to 1 ms.
+A full documentation of the options of the program is [available on the wiki](https://github.com/benlaug/labgen-p/wiki/Arguments-of-the-program).
 
 ## Citation
 
